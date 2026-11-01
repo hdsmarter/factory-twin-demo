@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { JOINT_LIMITS, forwardTool, robotArmPose, type RobotArmParams } from './robotArm'
+import { JOINT_LIMITS, armReachProblem, forwardTool, robotArmPose, type RobotArmParams } from './robotArm'
 
 const p: RobotArmParams = {
   origin: { x: 0, z: 0 },
@@ -67,5 +67,13 @@ describe('robotArmPose', () => {
     for (const t of timeline.filter((t) => t > atPick.at(-1)! && t < atPlace[0]!)) expect(robotArmPose(p, t).carrying).toBe(true)
     expect(robotArmPose(p, atPlace.at(-1)!).carrying).toBe(false)
     expect(robotArmPose(p, 0).carrying).toBe(false)
+  })
+})
+
+describe('armReachProblem', () => {
+  it('@S3 可達的取放點 → null；太遠或太近 → 說明哪個點位', () => {
+    expect(armReachProblem(p)).toBeNull()
+    expect(armReachProblem({ ...p, pick: { x: 3.5, y: 0.95, z: 0 } })).toContain('取料點')
+    expect(armReachProblem({ ...p, place: { x: 0.03, y: 0.5, z: 0 } })).toContain('放料點')
   })
 })

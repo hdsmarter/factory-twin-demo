@@ -1,0 +1,9 @@
+{
+  "task": "T3",
+  "phase": "red",
+  "at": "2026-11-02T00:32:12+08:00",
+  "command": "npx vitest run src/domain/actors.test.ts",
+  "exit_code": 1,
+  "fingerprint": "7e544da+49a48762dec0",
+  "output_tail": " FAIL  src/domain/actors.test.ts > actorPose > @S1 週期結束回到起點（t 與 t+週期 姿態相同）\nAssertionError: expected [ NaN, NaN ] to deeply equal [ +0, +0 ]\n\n- Expected\n+ Received\n\n  [\n-   0,\n-   0,\n+   NaN,\n+   NaN,\n  ]\n\n ❯ src/domain/actors.test.ts:54:32\n     52|     for (const t of [0, 1.7, 12.3, 29.9]) expect(actorPose(worker, t +…\n     53|     const start = actorPose(worker, 0)\n     54|     expect([start.x, start.z]).toEqual([0, 0])\n       |                                ^\n     55|   })\n     56|\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯\n\n FAIL  src/domain/actors.test.ts > actorPose > @S2 AGV 在站點停靠時速度為零、行進時等速\nAssertionError: expected [ 'move', 'dock' ] to include 'walk'\n ❯ src/domain/actors.test.ts:74:32\n     72|     for (const t of times) {\n     73|       const p = actorPose(agv, t)\n     74|       expect(['move', 'dock']).toContain(p.action)\n       |                                ^\n     75|       if (p.action === 'dock') expect(p.speed).toBe(0)\n     76|       else speeds.add(Math.round(p.speed * 1e9))\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯\n\n\n Test Files  1 failed (1)\n      Tests  4 failed | 1 passed (5)\n   Start at  00:32:12\n   Duration  151ms (transform 50%, import 22%, tests 19%, worker 9%)"
+}

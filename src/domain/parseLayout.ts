@@ -1,5 +1,6 @@
 import { footprintRect } from './geometry'
-import type { Catalog, Equipment, LayoutError, ParseResult, PlacedEquipment, Site } from './layout'
+import type { Actor, Catalog, EnvironmentSpec, Equipment, LayoutError, ParseResult, PlacedEquipment, Site } from './layout'
+import { armParamsOf, armReachProblem } from './motion/robotArm'
 
 const EPSILON = 1e-9
 const ROTATIONS = [0, 90, 180, 270]
@@ -34,6 +35,38 @@ function equipmentShapeProblem(e: unknown): string | null {
   if (!ROTATIONS.includes(f.rotation as number)) return `設備 ${e.id} 的旋轉只能是 0/90/180/270`
   if (e.params !== undefined && (!isObject(e.params) || !Object.values(e.params).every(isFiniteNumber)))
     return `設備 ${e.id} 的參數值必須是有限數值`
+  return null
+}
+
+const ACTOR_TYPES = ['worker', 'agv']
+
+/** 移動體的形狀問題；合法回傳 null。 */
+function actorShapeProblem(a: unknown): string | null {
+  if (!isObject(a)) return '移動體不是物件'
+  if (!isText(a.id)) return '移動體編號必須是非空字串'
+  if (!isText(a.name)) return `移動體 ${a.id} 的名稱必須是非空字串`
+  if (!ACTOR_TYPES.includes(a.type as string)) return `移動體 ${a.id} 的類型只能是 ${ACTOR_TYPES.join('/')}`
+  if (!isPositive(a.cycleSeconds)) return `移動體 ${a.id} 的週期必須大於 0`
+  if (!Array.isArray(a.route) || a.route.length < 2) return `移動體 ${a.id} 的路線至少要 2 個點`
+  let dwell = 0
+  for (const w of a.route) {
+    if (!isObject(w) || !isFiniteNumber(w.x) || !isFiniteNumber(w.z)) return `移動體 ${a.id} 的路線點必須是有限數值`
+    if (w.dwell !== undefined && !(isFiniteNumber(w.dwell) && w.dwell >= 0)) return `移動體 ${a.id} 的停留時間不可為負`
+    dwell += (w.dwell as number | undefined) ?? 0
+  }
+  if (dwell >= (a.cycleSeconds as number)) return `移動體 ${a.id} 的停留時間總和必須小於週期`
+  return null
+}
+
+/** 環境設定的形狀問題；合法回傳 null。 */
+function environmentShapeProblem(e: unknown): string | null {
+  if (!isObject(e) || !isObject(e.island)) return '環境設定需含 island'
+  const i = e.island
+  if (![i.radius, i.plateauRadius, i.beachWidth].every(isPositive) || !isFiniteNumber(i.seed)) return '島嶼半徑、平台、沙灘寬度必須為正數，seed 為數值'
+  if ((i.plateauRadius as number) >= (i.radius as number) - (i.beachWidth as number)) return '島嶼平台必須小於陸地（半徑扣除沙灘）'
+  if (!isPositive(e.dayCycleSeconds) || !isPositive(e.waveSeconds)) return '日週期與海浪週期必須為正數'
+  const ratio = (e.dayCycleSeconds as number) / (e.waveSeconds as number)
+  if (Math.abs(ratio - Math.round(ratio)) > 1e-9) return '日週期必須是海浪週期的整數倍'
   return null
 }
 
@@ -78,6 +111,13 @@ export function parseLayout(raw: unknown, catalog: Catalog): ParseResult {
           if (!withinBounds(equipment, raw.bounds)) {
             errors.push({ code: 'OUT_OF_BOUNDS', equipmentId: equipment.id, message: `設備 ${equipment.id} 超出廠區邊界` })
           }
+          const unknown = Object.keys(equipment.params ?? {}).filter((k) => !model.params.includes(k))
+          if (unknown.length) {
+            errors.push({ code: 'UNKNOWN_PARAM', equipmentId: equipment.id, message: `設備 ${equipment.id} 的參數 ${unknown.join(', ')} 不在型號 ${equipment.model} 允許的清單（${model.params.join(', ') || '無'}）` })
+          } else if (model.kind === 'robot-arm') {
+            const problem = armReachProblem(armParamsOf(equipment, raw.cycleSeconds))
+            if (problem) errors.push({ code: 'UNREACHABLE', equipmentId: equipment.id, message: `手臂 ${equipment.id} 的${problem}` })
+          }
           placed.push({
             equipment,
             kind: model.kind,
@@ -86,5 +126,36 @@ export function parseLayout(raw: unknown, catalog: Catalog): ParseResult {
           })
         }
 
-  return errors.length ? { ok: false, errors } : { ok: true, site: raw, placed }
+  const actors: Actor[] = []
+  for (const candidate of (Array.isArray(raw.actors) ? raw.actors : []) as unknown[]) {
+    const problem = actorShapeProblem(candidate)
+    if (problem) {
+      const id = isObject(candidate) && isText(candidate.id) ? candidate.id : undefined
+      errors.push({ code: 'INVALID_SHAPE', ...(id ? { equipmentId: id } : {}), message: problem })
+      continue
+    }
+    const actor = candidate as Actor
+    if (seen.has(actor.id)) errors.push({ code: 'DUPLICATE_ID', equipmentId: actor.id, message: `編號 ${actor.id} 與其他設備或移動體重複` })
+    seen.add(actor.id)
+    const hw = raw.bounds.width / 2 + EPSILON
+    const hd = raw.bounds.depth / 2 + EPSILON
+    if (actor.route.some((w) => Math.abs(w.x) > hw || Math.abs(w.z) > hd)) {
+      errors.push({ code: 'OUT_OF_BOUNDS', equipmentId: actor.id, message: `移動體 ${actor.id} 的路線超出廠區邊界` })
+    }
+    actors.push(actor)
+  }
+
+  if (raw.environment !== undefined) {
+    const problem = environmentShapeProblem(raw.environment)
+    if (problem) errors.push({ code: 'INVALID_SHAPE', message: problem })
+    else {
+      const env = raw.environment as EnvironmentSpec
+      const corner = Math.hypot(raw.bounds.width / 2, raw.bounds.depth / 2)
+      if (corner > env.island.plateauRadius) {
+        errors.push({ code: 'OFF_ISLAND', message: `廠區（對角半徑 ${corner.toFixed(1)} m）超出島嶼平台（半徑 ${env.island.plateauRadius} m）` })
+      }
+    }
+  }
+
+  return errors.length ? { ok: false, errors } : { ok: true, site: raw, placed, actors }
 }

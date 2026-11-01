@@ -42,6 +42,40 @@ export interface Area {
   lines: Line[]
 }
 
+/** 路線站點；dwell > 0 表示在此停留（秒） */
+export interface Waypoint {
+  x: number
+  z: number
+  dwell?: number
+}
+
+export type ActorType = 'worker' | 'agv'
+
+/** 移動體：工作人員或 AGV，沿封閉路線循環 */
+export interface Actor {
+  id: string
+  name: string
+  type: ActorType
+  cycleSeconds: number
+  route: Waypoint[]
+}
+
+/** 島嶼：圓形陸地，中心平台放廠房，外圈為沙灘 */
+export interface IslandSpec {
+  radius: number
+  plateauRadius: number
+  beachWidth: number
+  seed: number
+}
+
+export interface EnvironmentSpec {
+  island: IslandSpec
+  /** 日週期（秒）：太陽在早晨與傍晚之間往返 */
+  dayCycleSeconds: number
+  /** 海浪週期（秒）；必須整除日週期 */
+  waveSeconds: number
+}
+
 export interface Site {
   id: string
   name: string
@@ -49,6 +83,8 @@ export interface Site {
   /** 生產週期（秒）：所有動作以此週期循環 */
   cycleSeconds: number
   areas: Area[]
+  environment?: EnvironmentSpec
+  actors?: Actor[]
 }
 
 export type EquipmentKind = 'conveyor' | 'robot-arm' | 'machine' | 'storage'
@@ -59,9 +95,9 @@ export type EquipmentVariant = MachineVariant | StorageVariant
 
 /** 型號：machine / storage 必須指定變體（型別保證，不靠執行期退回預設） */
 export type EquipmentModel =
-  | { kind: 'conveyor' | 'robot-arm'; label: string; variant?: undefined }
-  | { kind: 'machine'; label: string; variant: MachineVariant }
-  | { kind: 'storage'; label: string; variant: StorageVariant }
+  | { kind: 'conveyor' | 'robot-arm'; label: string; variant?: undefined; params: readonly string[] }
+  | { kind: 'machine'; label: string; variant: MachineVariant; params: readonly string[] }
+  | { kind: 'storage'; label: string; variant: StorageVariant; params: readonly string[] }
 
 export type Catalog = Readonly<Record<string, EquipmentModel>>
 
@@ -80,7 +116,7 @@ export interface PlacedEquipment {
   path: HierarchyPath
 }
 
-export type LayoutErrorCode = 'DUPLICATE_ID' | 'UNKNOWN_MODEL' | 'OUT_OF_BOUNDS' | 'INVALID_SHAPE'
+export type LayoutErrorCode = 'DUPLICATE_ID' | 'UNKNOWN_MODEL' | 'OUT_OF_BOUNDS' | 'INVALID_SHAPE' | 'UNREACHABLE' | 'UNKNOWN_PARAM' | 'OFF_ISLAND'
 
 export interface LayoutError {
   code: LayoutErrorCode
@@ -89,5 +125,5 @@ export interface LayoutError {
 }
 
 export type ParseResult =
-  | { ok: true; site: Site; placed: PlacedEquipment[] }
+  | { ok: true; site: Site; placed: PlacedEquipment[]; actors: Actor[] }
   | { ok: false; errors: LayoutError[] }

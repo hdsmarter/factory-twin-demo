@@ -150,3 +150,43 @@ export function robotArmPose(p: RobotArmParams, t: number): RobotArmPose {
   const grip = gripAt(phase)
   return { ...joints, grip, carrying: grip > 0.5, tool: forwardTool(p, joints) }
 }
+
+const WAYPOINT_LABEL: Record<Waypoint, string> = { pick: '取料點', abovePick: '取料點上方', place: '放料點', abovePlace: '放料點上方', home: '待機點' }
+
+/**
+ * 取放動作的每個路徑點是否可達（含關節限制）。可達回傳 null，否則回傳說明（指出哪個點位）。
+ * 與 IK 使用同一份路徑點與尺寸，確保「驗證通過 = 實際動得到」。
+ */
+export function armReachProblem(p: RobotArmParams): string | null {
+  const w = waypoints(p)
+  const order: Waypoint[] = ['pick', 'abovePick', 'place', 'abovePlace', 'home']
+  for (const name of order) {
+    const c = w[name]
+    const d = Math.hypot(c.r, c.y + p.tool - p.shoulderHeight)
+    const tooFar = d > p.upperArm + p.forearm - 1e-6
+    const tooNear = d < Math.abs(p.upperArm - p.forearm) + 1e-6
+    if (tooFar || tooNear) return `${WAYPOINT_LABEL[name]}${tooFar ? '超出手臂可達範圍' : '太靠近底座'}`
+    const q = solve(p, c)
+    for (const j of ['shoulder', 'elbow', 'wrist'] as const) {
+      const [min, max] = JOINT_LIMITS[j]
+      if (q[j] < min || q[j] > max) return `${WAYPOINT_LABEL[name]}需要的 ${j} 關節角度超出限制`
+    }
+  }
+  return null
+}
+
+/** 由配置中的設備（佔地 + 取放偏移參數）建立手臂參數；驗證與模擬共用。 */
+export function armParamsOf(
+  e: { footprint: { x: number; z: number }; params?: Record<string, number> },
+  cycleSeconds: number,
+): RobotArmParams {
+  const f = e.footprint
+  const q = (k: string, d: number) => e.params?.[k] ?? d
+  return {
+    ...ARM_6AX_DIMENSIONS,
+    origin: { x: f.x, z: f.z },
+    pick: { x: f.x + q('pickDx', 1), y: q('pickY', 1), z: f.z + q('pickDz', 0) },
+    place: { x: f.x + q('placeDx', -1), y: q('placeY', 1), z: f.z + q('placeDz', 0) },
+    cycleSeconds,
+  }
+}

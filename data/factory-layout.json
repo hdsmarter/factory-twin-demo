@@ -1,7 +1,11 @@
 {
   "id": "SITE-DEMO",
   "name": "示範工廠",
-  "bounds": { "width": 36, "depth": 20, "height": 9 },
+  "bounds": {
+    "width": 36,
+    "depth": 20,
+    "height": 9
+  },
   "cycleSeconds": 6,
   "areas": [
     {
@@ -16,9 +20,42 @@
               "id": "CELL-KIT",
               "name": "備料儲位",
               "equipment": [
-                { "id": "RACK-A1", "name": "原料料架 A1", "model": "RACK-STEEL", "footprint": { "x": -12, "z": -8.4, "width": 4, "depth": 1.2, "rotation": 0 } },
-                { "id": "RACK-A2", "name": "原料料架 A2", "model": "RACK-STEEL", "footprint": { "x": -6, "z": -8.4, "width": 4, "depth": 1.2, "rotation": 0 } },
-                { "id": "RACK-A3", "name": "半成品料架 A3", "model": "RACK-STEEL", "footprint": { "x": 0, "z": -8.4, "width": 4, "depth": 1.2, "rotation": 0 } }
+                {
+                  "id": "RACK-A1",
+                  "name": "原料料架 A1",
+                  "model": "RACK-STEEL",
+                  "footprint": {
+                    "x": -12,
+                    "z": -8.4,
+                    "width": 4,
+                    "depth": 1.2,
+                    "rotation": 0
+                  }
+                },
+                {
+                  "id": "RACK-A2",
+                  "name": "原料料架 A2",
+                  "model": "RACK-STEEL",
+                  "footprint": {
+                    "x": -6,
+                    "z": -8.4,
+                    "width": 4,
+                    "depth": 1.2,
+                    "rotation": 0
+                  }
+                },
+                {
+                  "id": "RACK-A3",
+                  "name": "半成品料架 A3",
+                  "model": "RACK-STEEL",
+                  "footprint": {
+                    "x": 0,
+                    "z": -8.4,
+                    "width": 4,
+                    "depth": 1.2,
+                    "rotation": 0
+                  }
+                }
               ]
             }
           ]
@@ -37,8 +74,33 @@
               "id": "CELL-10",
               "name": "上料加工",
               "equipment": [
-                { "id": "CNC-01", "name": "CNC 加工機 01", "model": "CNC-MILL", "footprint": { "x": -11, "z": -3, "width": 3.2, "depth": 2.2, "rotation": 0 } },
-                { "id": "CONV-01", "name": "入料輸送帶", "model": "CONV-BELT", "footprint": { "x": -9, "z": 0, "width": 8, "depth": 0.9, "rotation": 0 }, "params": { "itemCount": 4 } }
+                {
+                  "id": "CNC-01",
+                  "name": "CNC 加工機 01",
+                  "model": "CNC-MILL",
+                  "footprint": {
+                    "x": -11,
+                    "z": -3,
+                    "width": 3.2,
+                    "depth": 2.2,
+                    "rotation": 0
+                  }
+                },
+                {
+                  "id": "CONV-01",
+                  "name": "入料輸送帶",
+                  "model": "CONV-BELT",
+                  "footprint": {
+                    "x": -9,
+                    "z": 0,
+                    "width": 8,
+                    "depth": 0.9,
+                    "rotation": 0
+                  },
+                  "params": {
+                    "itemCount": 4
+                  }
+                }
               ]
             },
             {
@@ -46,9 +108,24 @@
               "name": "移載",
               "equipment": [
                 {
-                  "id": "ARM-01", "name": "移載手臂 01", "model": "ARM-6AX",
-                  "footprint": { "x": -4, "z": -1.15, "width": 1.1, "depth": 1.1, "rotation": 0 },
-                  "params": { "pickDx": -1.2, "pickDz": 1.15, "pickY": 1.0, "placeDx": 1.2, "placeDz": 1.15, "placeY": 1.0 }
+                  "id": "ARM-01",
+                  "name": "移載手臂 01",
+                  "model": "ARM-6AX",
+                  "footprint": {
+                    "x": -4,
+                    "z": -1.15,
+                    "width": 1.1,
+                    "depth": 1.1,
+                    "rotation": 0
+                  },
+                  "params": {
+                    "pickDx": -1.2,
+                    "pickDz": 1.15,
+                    "pickY": 1.0,
+                    "placeDx": 1.2,
+                    "placeDz": 1.15,
+                    "placeY": 1.0
+                  }
                 }
               ]
             },
@@ -56,8 +133,33 @@
               "id": "CELL-30",
               "name": "視覺檢測",
               "equipment": [
-                { "id": "CONV-02", "name": "檢測輸送帶", "model": "CONV-BELT", "footprint": { "x": 1.2, "z": 0, "width": 8, "depth": 0.9, "rotation": 0 }, "params": { "itemCount": 4 } },
-                { "id": "INSP-01", "name": "視覺檢測站 01", "model": "INSP-VISION", "footprint": { "x": 1.2, "z": 0, "width": 1.8, "depth": 1.8, "rotation": 0 } }
+                {
+                  "id": "CONV-02",
+                  "name": "檢測輸送帶",
+                  "model": "CONV-BELT",
+                  "footprint": {
+                    "x": 1.2,
+                    "z": 0,
+                    "width": 8,
+                    "depth": 0.9,
+                    "rotation": 0
+                  },
+                  "params": {
+                    "itemCount": 4
+                  }
+                },
+                {
+                  "id": "INSP-01",
+                  "name": "視覺檢測站 01",
+                  "model": "INSP-VISION",
+                  "footprint": {
+                    "x": 1.2,
+                    "z": 0,
+                    "width": 1.8,
+                    "depth": 1.8,
+                    "rotation": 0
+                  }
+                }
               ]
             },
             {
@@ -65,15 +167,168 @@
               "name": "下料堆疊",
               "equipment": [
                 {
-                  "id": "ARM-02", "name": "下料手臂 02", "model": "ARM-6AX",
-                  "footprint": { "x": 6.4, "z": -1.15, "width": 1.1, "depth": 1.1, "rotation": 0 },
-                  "params": { "pickDx": -1.2, "pickDz": 1.15, "pickY": 1.0, "placeDx": 1.3, "placeDz": -0.9, "placeY": 0.45 }
+                  "id": "ARM-02",
+                  "name": "下料手臂 02",
+                  "model": "ARM-6AX",
+                  "footprint": {
+                    "x": 6.4,
+                    "z": -1.15,
+                    "width": 1.1,
+                    "depth": 1.1,
+                    "rotation": 0
+                  },
+                  "params": {
+                    "pickDx": -1.2,
+                    "pickDz": 1.15,
+                    "pickY": 1.0,
+                    "placeDx": 1.3,
+                    "placeDz": -0.9,
+                    "placeY": 0.45
+                  }
                 },
-                { "id": "PAL-01", "name": "成品棧板站", "model": "PALLET-STATION", "footprint": { "x": 7.7, "z": -2.05, "width": 1.2, "depth": 1.0, "rotation": 0 } },
-                { "id": "RACK-B1", "name": "成品料架 B1", "model": "RACK-STEEL", "footprint": { "x": 12, "z": -3.5, "width": 4, "depth": 1.2, "rotation": 90 } }
+                {
+                  "id": "PAL-01",
+                  "name": "成品棧板站",
+                  "model": "PALLET-STATION",
+                  "footprint": {
+                    "x": 7.7,
+                    "z": -2.05,
+                    "width": 1.2,
+                    "depth": 1.0,
+                    "rotation": 0
+                  }
+                },
+                {
+                  "id": "RACK-B1",
+                  "name": "成品料架 B1",
+                  "model": "RACK-STEEL",
+                  "footprint": {
+                    "x": 12,
+                    "z": -3.5,
+                    "width": 4,
+                    "depth": 1.2,
+                    "rotation": 90
+                  }
+                }
               ]
             }
           ]
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "island": {
+      "radius": 150,
+      "plateauRadius": 45,
+      "beachWidth": 20,
+      "seed": 7
+    },
+    "dayCycleSeconds": 120,
+    "waveSeconds": 6
+  },
+  "actors": [
+    {
+      "id": "WK-01",
+      "name": "巡檢員 小林",
+      "type": "worker",
+      "cycleSeconds": 60,
+      "route": [
+        {
+          "x": -11,
+          "z": -1.25,
+          "dwell": 5
+        },
+        {
+          "x": -14.5,
+          "z": -1.25
+        },
+        {
+          "x": -14.5,
+          "z": 2.4
+        },
+        {
+          "x": 1.2,
+          "z": 2.4,
+          "dwell": 4
+        },
+        {
+          "x": 10,
+          "z": 2.4
+        },
+        {
+          "x": 10,
+          "z": -5.6
+        },
+        {
+          "x": -9,
+          "z": -5.6
+        },
+        {
+          "x": -9,
+          "z": -1.25
+        }
+      ]
+    },
+    {
+      "id": "WK-02",
+      "name": "物料員 阿明",
+      "type": "worker",
+      "cycleSeconds": 30,
+      "route": [
+        {
+          "x": -12,
+          "z": -7,
+          "dwell": 5
+        },
+        {
+          "x": 0,
+          "z": -7,
+          "dwell": 5
+        }
+      ]
+    },
+    {
+      "id": "AGV-01",
+      "name": "成品搬運 AGV",
+      "type": "agv",
+      "cycleSeconds": 20,
+      "route": [
+        {
+          "x": 9.2,
+          "z": -1.2,
+          "dwell": 4
+        },
+        {
+          "x": 10.6,
+          "z": -1.2
+        },
+        {
+          "x": 10.6,
+          "z": -4.5,
+          "dwell": 4
+        },
+        {
+          "x": 9.2,
+          "z": -4.5
+        }
+      ]
+    },
+    {
+      "id": "AGV-02",
+      "name": "物流巡線 AGV",
+      "type": "agv",
+      "cycleSeconds": 60,
+      "route": [
+        {
+          "x": -14,
+          "z": 4.6,
+          "dwell": 3
+        },
+        {
+          "x": 14,
+          "z": 4.6,
+          "dwell": 3
         }
       ]
     }

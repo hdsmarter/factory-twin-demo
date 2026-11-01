@@ -1,0 +1,235 @@
+{
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "凍結契約：layout 型別擴充、型號參數清單、ParseResult/FrameState 擴充",
+      "role": "implementer",
+      "scenarios": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8"
+      ],
+      "files": [
+        "src/domain/layout.ts",
+        "src/domain/catalog.ts",
+        "src/domain/contract.test.ts"
+      ],
+      "depends_on": [],
+      "test_command": "npx vitest run src/domain/contract.test.ts"
+    },
+    {
+      "id": "T2",
+      "title": "配置驗證：UNREACHABLE、UNKNOWN_PARAM、actor 出界、OFF_ISLAND",
+      "role": "implementer",
+      "scenarios": [
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "files": [
+        "src/domain/parseLayout.ts",
+        "src/domain/parseLayout.test.ts",
+        "src/domain/motion/robotArm.ts",
+        "src/domain/motion/robotArm.test.ts"
+      ],
+      "depends_on": [
+        "T1",
+        "T4"
+      ],
+      "test_command": "npx vitest run src/domain/parseLayout.test.ts src/domain/motion/robotArm.test.ts"
+    },
+    {
+      "id": "T3",
+      "title": "actorPose：人員與 AGV 沿路線移動、站點停留",
+      "role": "implementer",
+      "scenarios": [
+        "S1",
+        "S2"
+      ],
+      "files": [
+        "src/domain/actors.ts",
+        "src/domain/actors.test.ts"
+      ],
+      "depends_on": [
+        "T1"
+      ],
+      "test_command": "npx vitest run src/domain/actors.test.ts"
+    },
+    {
+      "id": "T4",
+      "title": "環境：sunAt、wavePhase、islandHeight、isLand、forestPlacement；等角投影",
+      "role": "implementer",
+      "scenarios": [
+        "S7",
+        "S8"
+      ],
+      "files": [
+        "src/domain/environment.ts",
+        "src/domain/environment.test.ts",
+        "src/domain/projection.ts",
+        "src/domain/projection.test.ts"
+      ],
+      "depends_on": [
+        "T1"
+      ],
+      "test_command": "npx vitest run src/domain/environment.test.ts src/domain/projection.test.ts"
+    },
+    {
+      "id": "T5",
+      "title": "simulate 擴充 + 產線配置加入島嶼、人員、AGV",
+      "role": "implementer",
+      "scenarios": [
+        "S1",
+        "S2",
+        "S7",
+        "S10"
+      ],
+      "files": [
+        "src/domain/simulate.ts",
+        "src/domain/simulate.test.ts",
+        "data/factory-layout.json",
+        "src/domain/factoryLayout.test.ts"
+      ],
+      "depends_on": [
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "test_command": "npx vitest run src/domain"
+    },
+    {
+      "id": "T6",
+      "title": "資產：島嶼樹木岩石、沙草材質、海面法線、角色 FBX→GLB 管線",
+      "role": "implementer",
+      "scenarios": [
+        "S10",
+        "S11"
+      ],
+      "files": [
+        "assets/manifest.json",
+        "assets/LICENSES.md",
+        "scripts/assets/manifest-ls.mjs",
+        "scripts/assets/manifest-ls.test.ts",
+        "scripts/assets/fetch.mjs",
+        "scripts/assets/optimize.sh",
+        "scripts/assets/validate.mjs",
+        "scripts/assets/pipeline.sh",
+        "scripts/assets/pipeline.test.ts",
+        "scripts/assets/assets-ready.test.ts",
+        "scripts/assets/convert-fbx.sh",
+        "scripts/assets/convert-fbx.test.ts",
+        "package.json",
+        "package-lock.json"
+      ],
+      "depends_on": [],
+      "test_command": "npx vitest run scripts/assets"
+    },
+    {
+      "id": "T7",
+      "title": "3D 島嶼環境：天空太陽、海面、地形、森林岩石、廠房外殼與視角模式",
+      "role": "implementer",
+      "scenarios": [
+        "S10",
+        "S12"
+      ],
+      "files": [
+        "src/scene/island/Sky.tsx",
+        "src/scene/island/Ocean.tsx",
+        "src/scene/island/Terrain.tsx",
+        "src/scene/island/Forest.tsx",
+        "src/scene/island/index.tsx",
+        "src/scene/BuildingShell.tsx",
+        "src/scene/viewMode.ts",
+        "src/theme/islandTokens.ts"
+      ],
+      "depends_on": [
+        "T5",
+        "T6"
+      ],
+      "test_command": "npx tsc --noEmit -p .",
+      "tdd": false,
+      "tdd_exempt_reason": "純呈現元件；行為由 T10 的 E2E（S10、S12）驗收，T10 先寫 red"
+    },
+    {
+      "id": "T8",
+      "title": "3D 人員、AGV、天窗光束、粉塵",
+      "role": "implementer",
+      "scenarios": [
+        "S10"
+      ],
+      "files": [
+        "src/scene/actors/Worker.tsx",
+        "src/scene/actors/Agv.tsx",
+        "src/scene/actors/index.tsx",
+        "src/scene/effects/LightBeams.tsx",
+        "src/scene/effects/Dust.tsx",
+        "src/theme/actorTokens.ts"
+      ],
+      "depends_on": [
+        "T5",
+        "T6"
+      ],
+      "test_command": "npx tsc --noEmit -p .",
+      "tdd": false,
+      "tdd_exempt_reason": "純呈現元件；行為由 T10 的 E2E（S10）驗收"
+    },
+    {
+      "id": "T9",
+      "title": "等角 2D 插畫（SVG）：島嶼、海浪、設備、Open Peeps 人員、AGV",
+      "role": "implementer",
+      "scenarios": [
+        "S8",
+        "S9"
+      ],
+      "files": [
+        "src/view2d/IsoScene.tsx",
+        "src/view2d/IsoScene.test.ts",
+        "src/view2d/shapes.tsx",
+        "src/view2d/palette.ts",
+        "src/view2d/Peep.tsx",
+        "package.json",
+        "package-lock.json"
+      ],
+      "depends_on": [
+        "T5"
+      ],
+      "test_command": "npx vitest run src/view2d"
+    },
+    {
+      "id": "T10",
+      "title": "整合：切換列與轉場、視角模式、探針擴充、E2E（先 red）",
+      "role": "implementer",
+      "scenarios": [
+        "S9",
+        "S10",
+        "S12"
+      ],
+      "files": [
+        "src/App.tsx",
+        "src/scene/Probe.tsx",
+        "src/scene/Building.tsx",
+        "src/scene/Environment.tsx",
+        "src/scene/Effects.tsx",
+        "src/i18n/zh-TW.ts",
+        "src/theme/tokens.ts",
+        "e2e/island.spec.ts",
+        "vite.config.ts",
+        "src/scene/Factory.tsx",
+        "src/domain/specs.ts",
+        "assets/LICENSES.md"
+      ],
+      "depends_on": [
+        "T7",
+        "T8",
+        "T9"
+      ],
+      "test_command": "npx playwright test e2e"
+    }
+  ]
+}

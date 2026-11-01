@@ -1,0 +1,9 @@
+{
+  "task": "T3",
+  "phase": "green",
+  "at": "2026-11-02T00:32:24+08:00",
+  "command": "npx vitest run src/domain/actors.test.ts",
+  "exit_code": 1,
+  "fingerprint": "7e544da+cf0d2c7b8999",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n ❯ src/domain/actors.test.ts (5 tests | 1 failed) 22ms\n   ❯ actorPose (5)\n     × @S1 週期結束回到起點（t 與 t+週期 姿態相同） 4ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  src/domain/actors.test.ts > actorPose > @S1 週期結束回到起點（t 與 t+週期 姿態相同）\nAssertionError: expected { x: 6, z: 2.2399999999999975, …(4) } to deeply equal { x: 6, z: 2.2400000000000007, …(4) }\n\n- Expected\n+ Received\n\n@@ -2,7 +2,7 @@\n    \"action\": \"walk\",\n    \"heading\": -1.5707963267948966,\n    \"speed\": 0.8,\n    \"waypoint\": 1,\n    \"x\": 6,\n-   \"z\": 2.2400000000000007,\n+   \"z\": 2.2399999999999975,\n  }\n\n ❯ src/domain/actors.test.ts:52:94\n     50|\n     51|   it('@S1 週期結束回到起點（t 與 t+週期 姿態相同）', () => {\n     52|     for (const t of [0, 1.7, 12.3, 29.9]) expect(actorPose(worker, t +…\n       |                                                                                              ^\n     53|     const start = actorPose(worker, 0)\n     54|     expect([start.x, start.z]).toEqual([0, 0])\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed (1)\n      Tests  1 failed | 4 passed (5)\n   Start at  00:32:25\n   Duration  137ms (transform 38%, tests 37%, import 21%, worker 4%)"
+}

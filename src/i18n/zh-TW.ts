@@ -4,6 +4,13 @@ export const zhTW = {
   subtitle: '通用組裝產線 · 即時 3D 寫實渲染',
   hint: '拖曳旋轉 · 滾輪縮放 · 右鍵平移',
   layoutInvalid: '產線配置無法載入',
+  viewIsland: '島嶼全景',
+  viewInterior: '廠內',
+  view2d: '2D 插畫',
+  viewSwitcher: '切換視角',
+  iso2dLabel: '工廠等角插畫：與 3D 場景共用同一份產線資料',
+  subtitleIsland: '荒島工廠 · 即時 3D 寫實場景',
+  subtitle2d: '等角插畫 · 與 3D 共用同一份資料',
 } as const
 
 export type Messages = typeof zhTW

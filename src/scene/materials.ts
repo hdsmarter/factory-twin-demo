@@ -6,10 +6,15 @@ import { color } from '../theme/tokens'
 /** Poly Haven 貼圖組 id（與 assets/manifest.json 中 kind=texture 的 id 一致） */
 export type PbrSetId = 'smooth_concrete_floor' | 'blue_metal_plate' | 'rubberized_track' | 'corrugated_iron_02'
 
+/** 資產根路徑：跟著 Vite 的 base（部署在子路徑或 Artifact 時為相對路徑） */
+const ASSET_ROOT = `${import.meta.env.BASE_URL}assets`
+
 export const assetUrl = {
-  model: (id: string) => `/assets/models/${id}.glb`,
-  hdri: (id: string) => `/assets/hdri/${id}.hdr`,
-  texture: (id: PbrSetId, map: 'diff' | 'nor_gl' | 'arm') => `/assets/textures/${id}/${map}.jpg`,
+  model: (id: string) => `${ASSET_ROOT}/models/${id}.glb`,
+  hdri: (id: string) => `${ASSET_ROOT}/hdri/${id}.hdr`,
+  texture: (id: PbrSetId, map: 'diff' | 'nor_gl' | 'arm') => `${ASSET_ROOT}/textures/${id}/${map}.jpg`,
+  /** 任意相對於 assets/ 的檔案 */
+  file: (path: string) => `${ASSET_ROOT}/${path}`,
 }
 
 export interface PbrMaps {

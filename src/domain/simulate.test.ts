@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { catalog } from './catalog'
 import { parseLayout } from './parseLayout'
 import { JOINT_LIMITS } from './motion/robotArm'
-import { simulate } from './simulate'
+import { scenePeriod, simulate } from './simulate'
 import { DEFAULT_CONVEYOR_ITEMS } from './specs'
 
 const parsed = parseLayout(JSON.parse(readFileSync(new URL('../../data/factory-layout.json', import.meta.url), 'utf8')), catalog)
@@ -23,13 +23,31 @@ function expectSameState(a: unknown, b: unknown, path = 'state'): void {
 }
 
 describe('simulate', () => {
-  it('@S6 同一時間點、相隔一個生產週期 → 三次計算狀態相同', () => {
+  it('@S6 同一時間點、相隔一個生產週期 → 三次計算的設備狀態相同', () => {
     for (const t of [0, 0.37, 2.5, 5.999]) {
       const first = simulate(site, placed, t)
-      expectSameState(first, simulate(site, placed, t))
-      expectSameState(first, simulate(site, placed, t + site.cycleSeconds))
-      expectSameState(first, simulate(site, placed, t - 3 * site.cycleSeconds))
+      expectSameState(first.equipment, simulate(site, placed, t).equipment)
+      expectSameState(first.equipment, simulate(site, placed, t + site.cycleSeconds).equipment)
+      expectSameState(first.equipment, simulate(site, placed, t - 3 * site.cycleSeconds).equipment)
     }
+  })
+
+  it('整個畫面（設備、人員、AGV、太陽、海浪）以場景週期循環', () => {
+    const period = scenePeriod(site)
+    expect(period).toBe(120) // lcm(6, 60, 30, 20, 60, 120, 6)
+    for (const t of [0, 7.3, 59.1]) {
+      const a = simulate(site, placed, t)
+      expectSameState(a, simulate(site, placed, t + period))
+      expectSameState(a, simulate(site, placed, t))
+    }
+  })
+
+  it('@S1 @S2 每位人員與每台 AGV 都有姿態，太陽與海浪有狀態', () => {
+    const f = simulate(site, placed, 3)
+    expect(f.actors, 'FrameState.actors').toBeDefined()
+    expect(Object.keys(f.actors).sort()).toEqual((site.actors ?? []).map((a) => a.id).sort())
+    expect(f.environment?.sun.elevation).toBeGreaterThan(0)
+    expect(f.environment?.wave).toBeGreaterThanOrEqual(0)
   })
 
   it('每台設備都有狀態，且種類與配置一致', () => {

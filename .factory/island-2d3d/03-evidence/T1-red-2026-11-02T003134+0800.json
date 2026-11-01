@@ -1,0 +1,9 @@
+{
+  "task": "T1",
+  "phase": "red",
+  "at": "2026-11-02T00:31:34+08:00",
+  "command": "npx vitest run src/domain/contract.test.ts",
+  "exit_code": 1,
+  "fingerprint": "7e544da+cccaf8f23916",
+  "output_tail": "      5| describe('契約：型號參數允許清單', () => {\n      6|   it('每個型號都宣告允許的參數名稱（未宣告 = 不接受任何參數）', () => {\n      7|     for (const [key, model] of Object.entries(catalog)) expect(Array.i…\n       |                                                                                                  ^\n      8|   })\n      9|   it('手臂允許取放點參數、輸送帶允許料件數', () => {\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯\n\n FAIL  src/domain/contract.test.ts > 契約：型號參數允許清單 > 手臂允許取放點參數、輸送帶允許料件數\nAssertionError: expected undefined to deeply equal [ 'pickDx', 'pickDz', 'pickY', …(3) ]\n\n- Expected:\n[\n  \"pickDx\",\n  \"pickDz\",\n  \"pickY\",\n  \"placeDx\",\n  \"placeDz\",\n  \"placeY\",\n]\n\n+ Received:\nundefined\n\n ❯ src/domain/contract.test.ts:10:40\n      8|   })\n      9|   it('手臂允許取放點參數、輸送帶允許料件數', () => {\n     10|     expect(catalog['ARM-6AX']!.params).toEqual(['pickDx', 'pickDz', 'p…\n       |                                        ^\n     11|     expect(catalog['CONV-BELT']!.params).toEqual(['itemCount'])\n     12|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯\n\n\n Test Files  1 failed (1)\n      Tests  2 failed | 1 passed (3)\n   Start at  00:31:36\n   Duration  233ms (transform 50%, import 22%, tests 17%, worker 11%)"
+}

@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { parseLayout } from './parseLayout'
-import type { Catalog, Equipment, Site } from './layout'
+import type { Actor, Catalog, EnvironmentSpec, Equipment, Site } from './layout'
 
 const testCatalog: Catalog = {
-  CONV: { kind: 'conveyor', label: 'conveyor' },
-  ARM: { kind: 'robot-arm', label: 'arm' },
-  CNC: { kind: 'machine', label: 'cnc', variant: 'cnc' },
+  CONV: { kind: 'conveyor', label: 'conveyor', params: ['itemCount'] },
+  ARM: { kind: 'robot-arm', label: 'arm', params: ['pickDx', 'pickDz', 'pickY', 'placeDx', 'placeDz', 'placeY'] },
+  CNC: { kind: 'machine', label: 'cnc', variant: 'cnc', params: [] },
 }
 
 const eq = (id: string, model: string, x = 0, z = 0, width = 2, depth = 1, rotation: 0 | 90 | 180 | 270 = 0): Equipment => ({
@@ -130,5 +130,74 @@ describe('parseLayout', () => {
     it('設備編號為空字串 → INVALID_SHAPE', () => {
       expect(codes(siteWith({ ...eq('X', 'CONV'), id: '' }))).toContainEqual(expect.objectContaining({ code: 'INVALID_SHAPE' }))
     })
+  })
+})
+
+describe('第二輪規則：可達範圍、參數名稱、移動體路線、島嶼', () => {
+  const arm = (id: string, params: Record<string, number>): Equipment => ({ ...eq(id, 'ARM', 0, 0, 1, 1), params })
+  const okArm = { pickDx: -1.2, pickDz: 1.15, pickY: 1, placeDx: 1.2, placeDz: 1.15, placeY: 1 }
+  const actor = (over: Partial<Actor> = {}): Actor => ({ id: 'W1', name: 'w', type: 'worker', cycleSeconds: 20, route: [{ x: -5, z: -2, dwell: 2 }, { x: 5, z: -2 }, { x: 5, z: 3 }], ...over })
+  const env = (over: Partial<EnvironmentSpec['island']> = {}, rest: Partial<EnvironmentSpec> = {}): EnvironmentSpec => ({
+    island: { radius: 140, plateauRadius: 40, beachWidth: 18, seed: 7, ...over },
+    dayCycleSeconds: 120,
+    waveSeconds: 6,
+    ...rest,
+  })
+
+  it('對照組：合法的手臂、人員與島嶼 → 接受並回傳 actors', () => {
+    const r = parseLayout({ ...siteWith(arm('ARM-OK', okArm)), actors: [actor()], environment: env() }, testCatalog)
+    expect(r.ok ? [] : r.errors).toEqual([])
+    expect(r.ok && r.actors.map((a) => a.id)).toEqual(['W1'])
+  })
+
+  it('@S3 取料點離底座太遠 → UNREACHABLE 並指出手臂與點位', () => {
+    const r = parseLayout(siteWith(arm('ARM-FAR', { ...okArm, pickDx: -3.5 })), testCatalog)
+    expect(r.ok).toBe(false)
+    if (r.ok) return
+    const e = r.errors.find((x) => x.code === 'UNREACHABLE')
+    expect(e?.equipmentId).toBe('ARM-FAR')
+    expect(e?.message).toContain('取料點')
+  })
+
+  it('@S3 取料點貼近底座（關節需超出限制）→ UNREACHABLE', () => {
+    expect(codes(siteWith(arm('ARM-NEAR', { ...okArm, pickDx: 0.05, pickDz: 0, pickY: 0.6 })))).toContainEqual({ code: 'UNREACHABLE', equipmentId: 'ARM-NEAR' })
+  })
+
+  it('@S4 參數名稱拼錯 → UNKNOWN_PARAM 並指出設備與參數名', () => {
+    const { pickDx: _omit, ...rest } = okArm
+    const r = parseLayout(siteWith(arm('ARM-TYPO', { ...rest, pickdx: -1.2 })), testCatalog)
+    expect(r.ok).toBe(false)
+    if (r.ok) return
+    const e = r.errors.find((x) => x.code === 'UNKNOWN_PARAM')
+    expect(e?.equipmentId).toBe('ARM-TYPO')
+    expect(e?.message).toContain('pickdx')
+  })
+
+  it('@S5 AGV 路線有點位在廠區外 → OUT_OF_BOUNDS 並指出 AGV', () => {
+    const agv = actor({ id: 'AGV-9', type: 'agv', route: [{ x: 0, z: 0 }, { x: 12, z: 0 }] })
+    expect(codes({ ...siteWith(), actors: [agv] })).toEqual([{ code: 'OUT_OF_BOUNDS', equipmentId: 'AGV-9' }])
+  })
+
+  it('移動體與設備編號重複 → DUPLICATE_ID', () => {
+    expect(codes({ ...siteWith(eq('X1', 'CONV')), actors: [actor({ id: 'X1' })] })).toContainEqual({ code: 'DUPLICATE_ID', equipmentId: 'X1' })
+  })
+
+  it.each([
+    ['停留時間總和不小於週期', actor({ cycleSeconds: 2 })],
+    ['路線少於 2 點', actor({ route: [{ x: 0, z: 0 }] })],
+    ['類型不明', { ...actor(), type: 'drone' }],
+  ])('移動體%s → INVALID_SHAPE', (_l, a) => {
+    expect(codes({ ...siteWith(), actors: [a] })).toContainEqual({ code: 'INVALID_SHAPE', equipmentId: 'W1' })
+  })
+
+  it('@S6 島嶼平台小於廠區 → OFF_ISLAND', () => {
+    expect(codes({ ...siteWith(), environment: env({ plateauRadius: 10 }) })).toContainEqual(expect.objectContaining({ code: 'OFF_ISLAND' }))
+  })
+
+  it.each([
+    ['日週期不是海浪週期的整數倍', env({}, { waveSeconds: 7 })],
+    ['平台大於陸地', env({ plateauRadius: 130 })],
+  ])('環境設定%s → INVALID_SHAPE', (_l, e) => {
+    expect(codes({ ...siteWith(), environment: e })).toContainEqual(expect.objectContaining({ code: 'INVALID_SHAPE' }))
   })
 })

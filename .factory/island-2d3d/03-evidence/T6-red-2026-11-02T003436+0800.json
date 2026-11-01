@@ -1,0 +1,9 @@
+{
+  "task": "T6",
+  "phase": "red",
+  "at": "2026-11-02T00:34:36+08:00",
+  "command": "npx vitest run scripts/assets",
+  "exit_code": 1,
+  "fingerprint": "7e544da+d96191d52fdb",
+  "output_tail": "- Expected\n+ Received\n\n+ 用法：fetch.mjs <id> <kind> <polyhavenId> <resolution>\n+\n\n ❯ scripts/assets/pipeline.test.ts:165:22\n    163|   it('texture-file：下載單一圖片，stdout 印 raw 檔（副檔名取自 url）', () => {\n    164|     const r = fetchUrl(['waternormals', 'texture-file', 'https://examp…\n    165|     expect(r.stderr).toBe('')\n       |                      ^\n    166|     expect(r.status).toBe(0)\n    167|     expect(r.stdout.trim()).toBe(join('assets', 'raw', 'waternormals',…\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/16]⎯\n\n FAIL  scripts/assets/pipeline.test.ts > optimize.sh texture-file（S10） > 複製到 public/assets/textures/<id>.<ext>，stdout 印該路徑\nAssertionError: expected 'optimize：wn：未知 kind texture-file\\n' to be '' // Object.is equality\n\n- Expected\n+ Received\n\n+ optimize：wn：未知 kind texture-file\n+\n\n ❯ scripts/assets/pipeline.test.ts:187:22\n    185|       encoding: 'utf8',\n    186|     })\n    187|     expect(r.stderr).toBe('')\n       |                      ^\n    188|     expect(r.status).toBe(0)\n    189|     expect(r.stdout.trim()).toBe('public/assets/textures/wn.jpg')\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/16]⎯\n\n\n Test Files  4 failed | 1 passed (5)\n      Tests  16 failed | 53 passed (69)\n   Start at  00:34:36\n   Duration  843ms (tests 88%, transform 6%, import 6%, worker 1%)"
+}

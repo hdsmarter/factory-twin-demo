@@ -1,6 +1,8 @@
 import type { EquipmentKind, PlacedEquipment, Site } from './layout'
 import { conveyorItems, type ConveyorItem } from './motion/conveyor'
-import { ARM_6AX_DIMENSIONS, robotArmPose, type RobotArmPose } from './motion/robotArm'
+import { actorPose, type ActorPose } from './actors'
+import { sunAt, wavePhase, type SunState } from './environment'
+import { armParamsOf, robotArmPose, type RobotArmPose } from './motion/robotArm'
 import { cyclePhase } from './motion/time'
 import { DEFAULT_CONVEYOR_ITEMS } from './specs'
 
@@ -15,6 +17,10 @@ export interface FrameState {
   /** 生產週期相位 [0, 1)；狀態只依相位而定，不含原始時間 */
   phase: number
   equipment: Record<string, EquipmentState>
+  /** 人員與 AGV 的姿態 */
+  actors: Record<string, ActorPose>
+  /** 島嶼環境（有設定時） */
+  environment?: { sun: SunState; wave: number }
 }
 
 type Motion<K extends EquipmentKind> = (pe: PlacedEquipment, site: Site, t: number) => Extract<EquipmentState, { kind: K }>
@@ -29,18 +35,7 @@ export const motions: { [K in EquipmentKind]: Motion<K> } = {
     return { kind: 'conveyor', items: conveyorItems(params, t), beltOffset: cyclePhase(t, site.cycleSeconds) * f.width }
   },
   'robot-arm': (pe, site, t) => {
-    const f = pe.equipment.footprint
-    const pose = robotArmPose(
-      {
-        ...ARM_6AX_DIMENSIONS,
-        origin: { x: f.x, z: f.z },
-        pick: { x: f.x + num(pe, 'pickDx', 1), y: num(pe, 'pickY', 1), z: f.z + num(pe, 'pickDz', 0) },
-        place: { x: f.x + num(pe, 'placeDx', -1), y: num(pe, 'placeY', 1), z: f.z + num(pe, 'placeDz', 0) },
-        cycleSeconds: site.cycleSeconds,
-      },
-      t,
-    )
-    return { kind: 'robot-arm', pose }
+    return { kind: 'robot-arm', pose: robotArmPose(armParamsOf(pe.equipment, site.cycleSeconds), t) }
   },
   machine: (_pe, site, t) => {
     const phase = cyclePhase(t, site.cycleSeconds)
@@ -55,8 +50,26 @@ function stateOf<K extends EquipmentKind>(pe: PlacedEquipment & { kind: K }, sit
 }
 
 /** 產線狀態是時間 t 的純函數：同一個 t 永遠得到同一個結果，且以生產週期循環。 */
+const MS = 1000
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
+
+/** 整個畫面的循環週期（秒）：生產、移動體、日、海浪週期的最小公倍數（以毫秒整數計算）。 */
+export function scenePeriod(site: Site): number {
+  const cycles = [site.cycleSeconds, ...(site.actors ?? []).map((a) => a.cycleSeconds)]
+  if (site.environment) cycles.push(site.environment.dayCycleSeconds, site.environment.waveSeconds)
+  const ms = cycles.map((c) => Math.round(c * MS))
+  return ms.reduce((l, c) => (l / gcd(l, c)) * c) / MS
+}
 export function simulate(site: Site, placed: PlacedEquipment[], t: number): FrameState {
   const equipment: Record<string, EquipmentState> = {}
   for (const pe of placed) equipment[pe.equipment.id] = stateOf(pe, site, t)
-  return { phase: cyclePhase(t, site.cycleSeconds), equipment }
+  const actors: Record<string, ActorPose> = {}
+  for (const a of site.actors ?? []) actors[a.id] = actorPose(a, t)
+  const env = site.environment
+  return {
+    phase: cyclePhase(t, site.cycleSeconds),
+    equipment,
+    actors,
+    ...(env ? { environment: { sun: sunAt(env, t), wave: wavePhase(env, t) } } : {}),
+  }
 }

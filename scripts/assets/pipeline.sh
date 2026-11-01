@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # pipeline <manifest.json>
 # manifest-ls → (fetch | optimize | validate) × 資產，GNU parallel 並行 4 支，任一失敗立即停止。
+# TSV 欄位 1–4 給 fetch；第 5 欄（simplifyRatio，可省略）給 optimize，缺欄時 parallel 會把 {5} 展開成空。
 # stdout：每個通過驗證的輸出路徑。bash 3.2 相容。
 set -eo pipefail
 
@@ -17,4 +18,4 @@ dir="scripts/assets"
 
 node "${dir}/manifest-ls.mjs" "${manifest}" \
   | parallel --colsep '\t' -j4 --halt now,fail=1 \
-      "set -o pipefail; node ${dir}/fetch.mjs {1} {2} {3} {4} | xargs -I@ bash ${dir}/optimize.sh @ {1} {2} | xargs -I@ node ${dir}/validate.mjs @"
+      "set -o pipefail; node ${dir}/fetch.mjs {1} {2} {3} {4} | xargs -I@ bash ${dir}/optimize.sh @ {1} {2} {5} | xargs -I@ node ${dir}/validate.mjs @"

@@ -41,11 +41,6 @@ function Floor({ width, depth }: { width: number; depth: number }) {
         {/* 環氧地坪：以灰色為底色，只取貼圖的法線／粗糙度／AO 細節 */}
         <meshStandardMaterial normalMap={pbr.normalMap} roughnessMap={pbr.roughnessMap} aoMap={pbr.aoMap} color={color.floorTint} metalness={0} />
       </mesh>
-      {/* 廠外地坪：避免鏡頭看到建築外的空白 */}
-      <mesh rotation-x={-Math.PI / 2} position-y={-0.01} receiveShadow>
-        <planeGeometry args={[width * 6, depth * 8]} />
-        <meshStandardMaterial color={color.apron} roughness={0.95} />
-      </mesh>
     </group>
   )
 }

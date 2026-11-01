@@ -1,0 +1,9 @@
+{
+  "task": "T4",
+  "phase": "red",
+  "at": "2026-11-02T00:33:27+08:00",
+  "command": "npx vitest run src/domain/environment.test.ts src/domain/projection.test.ts",
+  "exit_code": 1,
+  "fingerprint": "7e544da+bb32c384fcb5",
+  "output_tail": "\n ❯ src/domain/environment.test.ts:50:19\n     48|   const trees = forestPlacement(env.island, site, 80)\n     49|   it('產生指定數量、全部在陸地上且避開平台與廠區', () => {\n     50|     expect(trees).toHaveLength(80)\n       |                   ^\n     51|     for (const t of trees) {\n     52|       expect(isLand(env.island, t.x, t.z)).toBe(true)\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯\n\n FAIL  src/domain/projection.test.ts > isoProject > @S8 與 three.js 正交相機（沿 ISO_DIRECTION 看向原點）的投影一致（只差等比縮放）\nAssertionError: expected 3 to be close to NaN, received difference is NaN, but expected 5e-7\n ❯ src/domain/projection.test.ts:16:26\n     14|       const { u, v } = isoProject(x!, y!, z!)\n     15|       // NDC 半寬 = 50 world units；SVG 的 v 向下為正\n     16|       expect(ndc.x * 50).toBeCloseTo(u, 6)\n       |                          ^\n     17|       expect(-ndc.y * 50).toBeCloseTo(v, 6)\n     18|     }\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯\n\n FAIL  src/domain/projection.test.ts > isoProject > 沿著視線方向的點投影到同一位置；往上（+y）在畫面上往上\nAssertionError: expected NaN to be close to NaN, received difference is NaN, but expected 5e-10\n ❯ src/domain/projection.test.ts:23:17\n     21|     const a = isoProject(0, 0, 0)\n     22|     const b = isoProject(ISO_DIRECTION.x * 9, ISO_DIRECTION.y * 9, ISO…\n     23|     expect(b.u).toBeCloseTo(a.u, 9)\n       |                 ^\n     24|     expect(b.v).toBeCloseTo(a.v, 9)\n     25|     expect(isoProject(0, 1, 0).v).toBeLessThan(0)\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯\n\n\n Test Files  2 failed (2)\n      Tests  7 failed | 2 passed (9)\n   Start at  00:33:28\n   Duration  177ms (import 47%, transform 37%, tests 10%, worker 6%)"
+}

@@ -41,4 +41,12 @@ describe('data/factory-layout.json（通用組裝產線）', () => {
     expect(layers).toBeGreaterThanOrEqual(1)
     expect(layers).toBeLessThanOrEqual(3)
   })
+
+  it('@S10 配置含島嶼環境、至少 2 位人員與 1 台 AGV', () => {
+    if (!r.ok) throw new Error('layout invalid')
+    expect(r.site.environment, 'environment').toBeDefined()
+    expect(r.site.environment?.island.radius).toBeGreaterThan(100)
+    expect(r.actors.filter((a) => a.type === 'worker').length).toBeGreaterThanOrEqual(2)
+    expect(r.actors.filter((a) => a.type === 'agv').length).toBeGreaterThanOrEqual(1)
+  })
 })

@@ -6,3 +6,6 @@ export const CONVEYOR_BELT_TOP = 0.85
 export const WORKPIECE_HEIGHT = 0.14
 export const PALLET_TOP = 0.15
 export const DEFAULT_CONVEYOR_ITEMS = 4
+
+/** 島嶼森林的樹木數量（3D 森林與 2D 插畫共用） */
+export const FOREST_COUNT = 90

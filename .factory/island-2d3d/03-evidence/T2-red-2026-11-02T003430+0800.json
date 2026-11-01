@@ -1,0 +1,9 @@
+{
+  "task": "T2",
+  "phase": "red",
+  "at": "2026-11-02T00:34:30+08:00",
+  "command": "npx vitest run src/domain/parseLayout.test.ts src/domain/motion/robotArm.test.ts",
+  "exit_code": 1,
+  "fingerprint": "7e544da+d96191d52fdb",
+  "output_tail": "\n FAIL  src/domain/parseLayout.test.ts > 第二輪規則：可達範圍、參數名稱、移動體路線、島嶼 > 環境設定日週期不是海浪週期的整數倍 → INVALID_SHAPE\n FAIL  src/domain/parseLayout.test.ts > 第二輪規則：可達範圍、參數名稱、移動體路線、島嶼 > 環境設定平台大於陸地 → INVALID_SHAPE\nAssertionError: expected [] to deep equally contain ObjectContaining{…}\n\n- Expected:\nObjectContaining {\n  \"code\": \"INVALID_SHAPE\",\n}\n\n+ Received:\n[]\n\n ❯ src/domain/parseLayout.test.ts:201:54\n    199|     ['平台大於陸地', env({ plateauRadius: 130 })],\n    200|   ])('環境設定%s → INVALID_SHAPE', (_l, e) => {\n    201|     expect(codes({ ...siteWith(), environment: e })).toContainEqual(ex…\n       |                                                      ^\n    202|   })\n    203| })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯\n\n FAIL  src/domain/motion/robotArm.test.ts > armReachProblem > @S3 可達的取放點 → null；太遠或太近 → 說明哪個點位\nAssertionError: the given combination of arguments (null and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string\n ❯ src/domain/motion/robotArm.test.ts:76:72\n     74|   it('@S3 可達的取放點 → null；太遠或太近 → 說明哪個點位', () => {\n     75|     expect(armReachProblem(p)).toBeNull()\n     76|     expect(armReachProblem({ ...p, pick: { x: 3.5, y: 0.95, z: 0 } }))…\n       |                                                                        ^\n     77|     expect(armReachProblem({ ...p, place: { x: 0.03, y: 0.5, z: 0 } })…\n     78|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯\n\n\n Test Files  2 failed (2)\n      Tests  12 failed | 25 passed (37)\n   Start at  00:34:31\n   Duration  234ms (transform 47%, tests 29%, import 17%, worker 7%)"
+}

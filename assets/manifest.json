@@ -139,6 +139,108 @@
       "author": "James Ray Cock",
       "license": "CC0-1.0",
       "url": "https://polyhaven.com/a/wooden_crate_01"
+    },
+    {
+      "id": "island_tree_01",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "island_tree_01",
+      "resolution": "1k",
+      "author": "Rico Cilliers, Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/island_tree_01",
+      "simplifyRatio": 0.03
+    },
+    {
+      "id": "island_tree_02",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "island_tree_02",
+      "resolution": "1k",
+      "author": "Rico Cilliers, Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/island_tree_02",
+      "simplifyRatio": 0.045
+    },
+    {
+      "id": "island_tree_03",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "island_tree_03",
+      "resolution": "1k",
+      "author": "Rico Cilliers, Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/island_tree_03",
+      "simplifyRatio": 0.025
+    },
+    {
+      "id": "coast_rocks_01",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "coast_rocks_01",
+      "resolution": "1k",
+      "author": "Rico Cilliers, Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/coast_rocks_01",
+      "simplifyRatio": 0.05
+    },
+    {
+      "id": "coast_rocks_02",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "coast_rocks_02",
+      "resolution": "1k",
+      "author": "Rico Cilliers, Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/coast_rocks_02",
+      "simplifyRatio": 0.03
+    },
+    {
+      "id": "fern_02",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "fern_02",
+      "resolution": "1k",
+      "author": "Rico Cilliers, Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/fern_02"
+    },
+    {
+      "id": "coast_sand_01",
+      "kind": "texture",
+      "source": "polyhaven",
+      "polyhavenId": "coast_sand_01",
+      "resolution": "1k",
+      "author": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/coast_sand_01"
+    },
+    {
+      "id": "aerial_grass_rock",
+      "kind": "texture",
+      "source": "polyhaven",
+      "polyhavenId": "aerial_grass_rock",
+      "resolution": "1k",
+      "author": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/aerial_grass_rock"
+    },
+    {
+      "id": "waternormals",
+      "kind": "texture-file",
+      "source": "url",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/r187/examples/textures/waternormals.jpg",
+      "author": "three.js authors",
+      "license": "MIT"
+    },
+    {
+      "id": "worker_human",
+      "kind": "character",
+      "source": "url",
+      "url": "https://opengameart.org/sites/default/files/Animated%20Human%20by%20%40Quaternius_0.zip",
+      "archivePath": "Animated Human by @Quaternius/FBX/Animated Human.fbx",
+      "author": "Quaternius",
+      "license": "CC0-1.0"
     }
   ]
 }
