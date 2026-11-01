@@ -322,6 +322,25 @@
         "T13"
       ],
       "test_command": "npx vitest run scripts/deploy"
+    },
+    {
+      "id": "T15",
+      "title": "部署：Artifact CSP 不允許 fetch data: → 載入時轉為 blob:",
+      "role": "implementer",
+      "scenarios": [
+        "S10",
+        "S11"
+      ],
+      "files": [
+        "src/platform/dataUrl.ts",
+        "src/platform/dataUrl.test.ts",
+        "src/main.tsx",
+        "vite.config.ts"
+      ],
+      "depends_on": [
+        "T14"
+      ],
+      "test_command": "npx vitest run src/platform"
     }
   ]
 }

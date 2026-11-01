@@ -1,0 +1,9 @@
+{
+  "task": "T15",
+  "phase": "red",
+  "at": "2026-11-02T01:40:10+08:00",
+  "command": "npx vitest run src/platform",
+  "exit_code": 1,
+  "fingerprint": "476434c+a61763e71417",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n ❯ src/platform/dataUrl.test.ts (3 tests | 1 failed) 5ms\n   ❯ dataUrlToBlobUrl（Artifact 的 CSP 不允許 fetch data: 網址，但允許 blob:） (3)\n     × base64 data URL → blob: URL，內容與型別不變 4ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  src/platform/dataUrl.test.ts > dataUrlToBlobUrl（Artifact 的 CSP 不允許 fetch data: 網址，但允許 blob:） > base64 data URL → blob: URL，內容與型別不變\nAssertionError: expected false to be true // Object.is equality\n\n- Expected\n+ Received\n\n- true\n+ false\n\n ❯ src/platform/dataUrl.test.ts:9:37\n      7|     const data = `data:image/webp;base64,${Buffer.from(bytes).toString…\n      8|     const out = dataUrlToBlobUrl(data)\n      9|     expect(out.startsWith('blob:')).toBe(true)\n       |                                     ^\n     10|     const blob = await (await fetch(out)).blob()\n     11|     expect(blob.type).toBe('image/webp')\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed (1)\n      Tests  1 failed | 2 passed (3)\n   Start at  01:40:12\n   Duration  156ms (transform 50%, import 24%, tests 15%, worker 11%)"
+}
