@@ -1,0 +1,9 @@
+{
+  "task": "T9",
+  "phase": "green",
+  "at": "2026-11-01T23:24:55+08:00",
+  "command": "npx playwright test e2e/s11-scene.spec.ts --reporter=line",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "Running 1 test using 1 worker\n\n[1/1] [chromium] › e2e/s11-scene.spec.ts:19:1 › @S11 開啟展示頁看到寫實 3D 產線\n[WebServer] 下午11:25:03 [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.\n\n[WebServer] 下午11:25:04 [vite] (client) [console.warn] THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.\n\n  1 passed (20.7s)"
+}

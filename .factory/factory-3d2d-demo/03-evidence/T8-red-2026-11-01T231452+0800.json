@@ -1,0 +1,9 @@
+{
+  "task": "T8",
+  "phase": "red",
+  "at": "2026-11-01T23:14:52+08:00",
+  "command": "npx vitest run scripts/assets/assets-ready.test.ts",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "- Expected\n+ Received\n\n- true\n+ false\n\n ❯ scripts/assets/assets-ready.test.ts:21:40\n     19|       it(`model ${a.id}：glb 存在且 gltf-validator 0 errors`, async () => {\n     20|         const file = `${ROOT}public/assets/models/${a.id}.glb`\n     21|         expect(existsSync(file), file).toBe(true)\n       |                                        ^\n     22|         const report = await validator.validateBytes(new Uint8Array(re…\n     23|         expect(report.issues.numErrors).toBe(0)\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/15]⎯\n\n FAIL  scripts/assets/assets-ready.test.ts > 資產就緒（S9） > model wooden_crate_01：glb 存在且 gltf-validator 0 errors\nAssertionError: /Users/tonyjiang/Code/ai-smarter-tw-影片/public/assets/models/wooden_crate_01.glb: expected false to be true // Object.is equality\n\n- Expected\n+ Received\n\n- true\n+ false\n\n ❯ scripts/assets/assets-ready.test.ts:21:40\n     19|       it(`model ${a.id}：glb 存在且 gltf-validator 0 errors`, async () => {\n     20|         const file = `${ROOT}public/assets/models/${a.id}.glb`\n     21|         expect(existsSync(file), file).toBe(true)\n       |                                        ^\n     22|         const report = await validator.validateBytes(new Uint8Array(re…\n     23|         expect(report.issues.numErrors).toBe(0)\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/15]⎯\n\n\n Test Files  1 failed (1)\n      Tests  15 failed | 1 passed (16)\n   Start at  23:14:53\n   Duration  202ms (import 51%, transform 29%, tests 15%, worker 5%)"
+}

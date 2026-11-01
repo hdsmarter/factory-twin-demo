@@ -1,0 +1,279 @@
+{
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "專案骨架（Vite/React/TS/vitest/playwright 設定）",
+      "role": "implementer",
+      "scenarios": [
+        "S11"
+      ],
+      "files": [
+        "package.json",
+        "tsconfig.json",
+        "vite.config.ts",
+        "playwright.config.ts",
+        "index.html",
+        ".gitignore"
+      ],
+      "depends_on": [],
+      "tdd": false,
+      "tdd_exempt_reason": "純設定檔；以 npm run typecheck 與後續任務的測試能執行作為驗證",
+      "test_command": "npx tsc --noEmit -p ."
+    },
+    {
+      "id": "T2",
+      "title": "凍結領域契約 + 型號目錄 + parseLayout（S1–S5）",
+      "role": "implementer",
+      "scenarios": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "files": [
+        "src/domain/layout.ts",
+        "src/domain/catalog.ts",
+        "src/domain/parseLayout.ts",
+        "src/domain/parseLayout.test.ts"
+      ],
+      "depends_on": [
+        "T1"
+      ],
+      "test_command": "npx vitest run src/domain/parseLayout.test.ts"
+    },
+    {
+      "id": "T3",
+      "title": "輸送帶料件動作純函數（S7）",
+      "role": "implementer",
+      "scenarios": [
+        "S7"
+      ],
+      "files": [
+        "src/domain/motion/time.ts",
+        "src/domain/motion/conveyor.ts",
+        "src/domain/motion/conveyor.test.ts"
+      ],
+      "depends_on": [
+        "T2"
+      ],
+      "test_command": "npx vitest run src/domain/motion/conveyor.test.ts"
+    },
+    {
+      "id": "T4",
+      "title": "機械手臂取放動作純函數（S8）",
+      "role": "implementer",
+      "scenarios": [
+        "S8"
+      ],
+      "files": [
+        "src/domain/motion/robotArm.ts",
+        "src/domain/motion/robotArm.test.ts"
+      ],
+      "depends_on": [
+        "T2"
+      ],
+      "test_command": "npx vitest run src/domain/motion/robotArm.test.ts"
+    },
+    {
+      "id": "T5",
+      "title": "simulate(site, placed, t) 與動作註冊表（S6）",
+      "role": "implementer",
+      "scenarios": [
+        "S6"
+      ],
+      "files": [
+        "src/domain/simulate.ts",
+        "src/domain/simulate.test.ts"
+      ],
+      "depends_on": [
+        "T3",
+        "T4",
+        "T6"
+      ],
+      "test_command": "npx vitest run src/domain/simulate.test.ts"
+    },
+    {
+      "id": "T6",
+      "title": "產線配置資料（通用組裝產線）",
+      "role": "implementer",
+      "scenarios": [
+        "S1",
+        "S11"
+      ],
+      "files": [
+        "data/factory-layout.json",
+        "src/domain/factoryLayout.test.ts"
+      ],
+      "depends_on": [
+        "T2"
+      ],
+      "test_command": "npx vitest run src/domain/factoryLayout.test.ts"
+    },
+    {
+      "id": "T7",
+      "title": "資產管線 Unix 小工具（manifest-ls/fetch/optimize/validate/pipeline）（S9、S10）",
+      "role": "implementer",
+      "scenarios": [
+        "S9",
+        "S10"
+      ],
+      "files": [
+        "scripts/assets/manifest-ls.mjs",
+        "scripts/assets/manifest-ls.test.ts",
+        "scripts/assets/fetch.mjs",
+        "scripts/assets/optimize.sh",
+        "scripts/assets/validate.mjs",
+        "scripts/assets/validate.test.ts",
+        "scripts/assets/pipeline.sh"
+      ],
+      "depends_on": [
+        "T1"
+      ],
+      "test_command": "npx vitest run scripts/assets/manifest-ls.test.ts scripts/assets/validate.test.ts"
+    },
+    {
+      "id": "T8",
+      "title": "資產清冊 + 實跑管線產出（S9）",
+      "role": "implementer",
+      "scenarios": [
+        "S9"
+      ],
+      "files": [
+        "assets/manifest.json",
+        "assets/LICENSES.md",
+        "scripts/assets/assets-ready.test.ts"
+      ],
+      "depends_on": [
+        "T7"
+      ],
+      "test_command": "npx vitest run scripts/assets/assets-ready.test.ts"
+    },
+    {
+      "id": "T9",
+      "title": "3D 寫實場景（R3F：廠房、光影、後處理、設備渲染器註冊表、時鐘注入、探針）（S11）",
+      "role": "implementer",
+      "scenarios": [
+        "S11"
+      ],
+      "files": [
+        "src/main.tsx",
+        "src/App.tsx",
+        "src/i18n/zh-TW.ts",
+        "src/theme/tokens.ts",
+        "src/scene/clock.tsx",
+        "src/scene/Factory.tsx",
+        "src/scene/Building.tsx",
+        "src/scene/Environment.tsx",
+        "src/scene/Effects.tsx",
+        "src/scene/Props.tsx",
+        "src/scene/materials.ts",
+        "src/scene/equipment/registry.tsx",
+        "src/scene/equipment/Conveyor.tsx",
+        "src/scene/equipment/RobotArm.tsx",
+        "src/scene/equipment/Machine.tsx",
+        "src/scene/Probe.tsx",
+        "e2e/s11-scene.spec.ts",
+        "src/scene/FittedModel.tsx",
+        "src/scene/equipment/Storage.tsx",
+        "src/scene/equipment/Workpiece.tsx"
+      ],
+      "depends_on": [
+        "T5",
+        "T6",
+        "T8"
+      ],
+      "test_command": "npx playwright test e2e/s11-scene.spec.ts"
+    },
+    {
+      "id": "T10",
+      "title": "審查修正（domain）：形狀驗證、階層測試、邊界、-0、geometry/specs 移入 domain、carrying",
+      "role": "implementer",
+      "scenarios": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8"
+      ],
+      "files": [
+        "src/domain/layout.ts",
+        "src/domain/catalog.ts",
+        "src/domain/parseLayout.ts",
+        "src/domain/parseLayout.test.ts",
+        "src/domain/geometry.ts",
+        "src/domain/geometry.test.ts",
+        "src/domain/specs.ts",
+        "src/domain/motion/time.ts",
+        "src/domain/motion/robotArm.ts",
+        "src/domain/motion/robotArm.test.ts",
+        "src/domain/simulate.ts",
+        "src/domain/simulate.test.ts",
+        "src/domain/factoryLayout.test.ts",
+        "src/domain/motion/time.test.ts"
+      ],
+      "depends_on": [
+        "T9"
+      ],
+      "test_command": "npx vitest run src/domain"
+    },
+    {
+      "id": "T11",
+      "title": "審查修正（scene/e2e）：探針驗實際網格+廠房+像素、道具 ErrorBoundary、皮帶接縫、移除未用資產",
+      "role": "implementer",
+      "scenarios": [
+        "S11"
+      ],
+      "files": [
+        "src/scene/Probe.tsx",
+        "src/scene/Building.tsx",
+        "src/scene/Props.tsx",
+        "src/scene/FittedModel.tsx",
+        "src/scene/ErrorBoundary.tsx",
+        "src/scene/materials.ts",
+        "src/scene/equipment/Conveyor.tsx",
+        "src/scene/equipment/RobotArm.tsx",
+        "src/scene/equipment/Machine.tsx",
+        "src/scene/equipment/Storage.tsx",
+        "src/scene/equipment/Workpiece.tsx",
+        "src/App.tsx",
+        "src/i18n/zh-TW.ts",
+        "e2e/s11-scene.spec.ts"
+      ],
+      "depends_on": [
+        "T10"
+      ],
+      "test_command": "npx playwright test e2e/s11-scene.spec.ts"
+    },
+    {
+      "id": "T12",
+      "title": "審查修正（資產管線）：pipeline 層級 S10 測試、必備貼圖清單、id 唯一/字元、bash 與路徑",
+      "role": "implementer",
+      "scenarios": [
+        "S9",
+        "S10"
+      ],
+      "files": [
+        "scripts/assets/manifest-ls.mjs",
+        "scripts/assets/manifest-ls.test.ts",
+        "scripts/assets/fetch.mjs",
+        "scripts/assets/validate.mjs",
+        "scripts/assets/optimize.sh",
+        "scripts/assets/pipeline.sh",
+        "scripts/assets/pipeline.test.ts",
+        "scripts/assets/assets-ready.test.ts",
+        "scripts/assets/texture-maps.json",
+        "assets/manifest.json",
+        "assets/LICENSES.md",
+        "package.json"
+      ],
+      "depends_on": [
+        "T9"
+      ],
+      "test_command": "npx vitest run scripts/assets"
+    }
+  ]
+}

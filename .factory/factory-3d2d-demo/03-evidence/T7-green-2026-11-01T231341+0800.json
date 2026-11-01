@@ -1,0 +1,9 @@
+{
+  "task": "T7",
+  "phase": "green",
+  "at": "2026-11-01T23:13:41+08:00",
+  "command": "npx vitest run scripts/assets/manifest-ls.test.ts scripts/assets/validate.test.ts",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  2 passed (2)\n      Tests  9 passed (9)\n   Start at  23:13:41\n   Duration  380ms (tests 92%, import 5%, transform 2%, worker 1%)"
+}

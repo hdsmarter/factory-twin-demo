@@ -1,0 +1,9 @@
+{
+  "task": "T9",
+  "phase": "red",
+  "at": "2026-11-01T23:18:08+08:00",
+  "command": "npx playwright test e2e/s11-scene.spec.ts --reporter=line",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "Running 1 test using 1 worker\n\n[1/1] [chromium] › e2e/s11-scene.spec.ts:19:1 › @S11 開啟展示頁看到寫實 3D 產線\n  1) [chromium] › e2e/s11-scene.spec.ts:19:1 › @S11 開啟展示頁看到寫實 3D 產線 ────────────────────────────────\n\n    Error: browserType.launch: Executable doesn't exist at /Users/tonyjiang/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell\n    ╔════════════════════════════════════════════════════════════╗\n    ║ Looks like Playwright was just installed or updated.       ║\n    ║ Please run the following command to download new browsers: ║\n    ║                                                            ║\n    ║     npx playwright install                                 ║\n    ║                                                            ║\n    ║ <3 Playwright Team                                         ║\n    ╚════════════════════════════════════════════════════════════╝\n\n    Error Context: artifacts/playwright/s11-scene--S11-開啟展示頁看到寫實-3D-產線-chromium/error-context.md\n\n\n  1 failed\n    [chromium] › e2e/s11-scene.spec.ts:19:1 › @S11 開啟展示頁看到寫實 3D 產線 ─────────────────────────────────"
+}

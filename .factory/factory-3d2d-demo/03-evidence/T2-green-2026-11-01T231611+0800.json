@@ -1,0 +1,9 @@
+{
+  "task": "T2",
+  "phase": "green",
+  "at": "2026-11-01T23:16:11+08:00",
+  "command": "npx vitest run src/domain/parseLayout.test.ts",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  1 passed (1)\n      Tests  7 passed (7)\n   Start at  23:16:11\n   Duration  98ms (import 41%, transform 25%, tests 19%, worker 14%)"
+}

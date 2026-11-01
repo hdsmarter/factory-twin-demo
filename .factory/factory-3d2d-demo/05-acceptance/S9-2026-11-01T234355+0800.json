@@ -1,0 +1,8 @@
+{
+  "scenario": "S9",
+  "at": "2026-11-01T23:43:55+08:00",
+  "command": "bash -c npm run -s assets >/dev/null 2>&1 && npx vitest run scripts/assets/assets-ready.test.ts scripts/assets/validate.test.ts",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  2 passed (2)\n      Tests  36 passed (36)\n   Start at  23:44:01\n   Duration  489ms (tests 91%, import 6%, transform 2%, worker 1%)"
+}

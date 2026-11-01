@@ -1,0 +1,9 @@
+{
+  "task": "T2",
+  "phase": "red",
+  "at": "2026-11-01T23:13:03+08:00",
+  "command": "npx vitest run src/domain/parseLayout.test.ts",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "AssertionError: expected [] to deeply equal [ ObjectContaining{…} ]\n\n- Expected\n+ Received\n\n- [\n-   ObjectContaining {\n-     \"code\": \"OUT_OF_BOUNDS\",\n-     \"equipmentId\": \"OUT\",\n-   },\n- ]\n+ []\n\n ❯ src/domain/parseLayout.test.ts:76:22\n     74|     expect(r.ok).toBe(false)\n     75|     if (r.ok) return\n     76|     expect(r.errors).toEqual([expect.objectContaining({ code: 'OUT_OF_…\n       |                      ^\n     77|   })\n     78|\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯\n\n FAIL  src/domain/parseLayout.test.ts > parseLayout > 結構不合法（非物件、缺 areas）→ INVALID_SHAPE，不丟例外\nTypeError: Cannot read properties of undefined (reading 'code')\n ❯ src/domain/parseLayout.test.ts:88:38\n     86|       const r = parseLayout(raw, testCatalog)\n     87|       expect(r.ok).toBe(false)\n     88|       if (!r.ok) expect(r.errors[0]!.code).toBe('INVALID_SHAPE')\n       |                                      ^\n     89|     }\n     90|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯\n\n\n Test Files  1 failed (1)\n      Tests  6 failed | 1 passed (7)\n   Start at  23:13:08\n   Duration  386ms (transform 49%, import 23%, tests 15%, worker 13%)"
+}

@@ -1,0 +1,9 @@
+{
+  "task": "T9",
+  "phase": "red",
+  "at": "2026-11-01T23:19:12+08:00",
+  "command": "npx playwright test e2e/s11-scene.spec.ts --reporter=line",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "Running 1 test using 1 worker\n\n[1/1] [chromium] › e2e/s11-scene.spec.ts:19:1 › @S11 開啟展示頁看到寫實 3D 產線\n  1) [chromium] › e2e/s11-scene.spec.ts:19:1 › @S11 開啟展示頁看到寫實 3D 產線 ────────────────────────────────\n\n    Error: expect(received).toBe(expected) // Object.is equality\n\n    Expected: true\n    Received: false\n\n    Call Log:\n    - Timeout 90000ms exceeded while waiting on the predicate\n\n      25 |   await page.goto('/?probe=1')\n      26 |\n    > 27 |   await expect.poll(() => page.evaluate(() => window.__factory?.ready ?? false), { timeout: 90_000 }).toBe(true)\n         |                                                                                                       ^\n      28 |   const rendered = await page.evaluate(() => [...(window.__factory?.equipmentIds ?? [])].sort())\n      29 |   expect(rendered).toEqual(layoutEquipmentIds())\n      30 |\n        at /Users/tonyjiang/Code/ai-smarter-tw-影片/e2e/s11-scene.spec.ts:27:103\n\n    Error Context: artifacts/playwright/s11-scene--S11-開啟展示頁看到寫實-3D-產線-chromium/error-context.md\n\n\n  1 failed\n    [chromium] › e2e/s11-scene.spec.ts:19:1 › @S11 開啟展示頁看到寫實 3D 產線 ─────────────────────────────────"
+}

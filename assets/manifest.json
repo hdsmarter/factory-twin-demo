@@ -1,0 +1,144 @@
+{
+  "assets": [
+    {
+      "id": "empty_warehouse_01",
+      "kind": "hdri",
+      "source": "polyhaven",
+      "polyhavenId": "empty_warehouse_01",
+      "resolution": "2k",
+      "author": "Sergej Majboroda",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/empty_warehouse_01"
+    },
+    {
+      "id": "smooth_concrete_floor",
+      "kind": "texture",
+      "source": "polyhaven",
+      "polyhavenId": "smooth_concrete_floor",
+      "resolution": "2k",
+      "author": "Dimitrios Savva",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/smooth_concrete_floor"
+    },
+    {
+      "id": "blue_metal_plate",
+      "kind": "texture",
+      "source": "polyhaven",
+      "polyhavenId": "blue_metal_plate",
+      "resolution": "1k",
+      "author": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/blue_metal_plate"
+    },
+    {
+      "id": "rubberized_track",
+      "kind": "texture",
+      "source": "polyhaven",
+      "polyhavenId": "rubberized_track",
+      "resolution": "1k",
+      "author": "Charlotte Baglioni",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/rubberized_track"
+    },
+    {
+      "id": "corrugated_iron_02",
+      "kind": "texture",
+      "source": "polyhaven",
+      "polyhavenId": "corrugated_iron_02",
+      "resolution": "1k",
+      "author": "Jenelle van Heerden, Sergej Majboroda",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/corrugated_iron_02"
+    },
+    {
+      "id": "plastic_crate_01",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "plastic_crate_01",
+      "resolution": "1k",
+      "author": "PierreB3D",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/plastic_crate_01"
+    },
+    {
+      "id": "cardboard_box_01",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "cardboard_box_01",
+      "resolution": "1k",
+      "author": "Rahul Chaudhary",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/cardboard_box_01"
+    },
+    {
+      "id": "industrial_storage_cart",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "industrial_storage_cart",
+      "resolution": "1k",
+      "author": "Jule Bielitz",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/industrial_storage_cart"
+    },
+    {
+      "id": "worn_metal_rack",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "worn_metal_rack",
+      "resolution": "1k",
+      "author": "Luca B",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/worn_metal_rack"
+    },
+    {
+      "id": "korean_fire_extinguisher_01",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "korean_fire_extinguisher_01",
+      "resolution": "1k",
+      "author": "UM JOORIN",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/korean_fire_extinguisher_01"
+    },
+    {
+      "id": "power_box_01",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "power_box_01",
+      "resolution": "1k",
+      "author": "Rico Cilliers, Yann Kervran",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/power_box_01"
+    },
+    {
+      "id": "tool_cart",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "tool_cart",
+      "resolution": "1k",
+      "author": "Savva Zakharov",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/tool_cart"
+    },
+    {
+      "id": "metal_toolbox",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "metal_toolbox",
+      "resolution": "1k",
+      "author": "Mateusz Sadek",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/metal_toolbox"
+    },
+    {
+      "id": "wooden_crate_01",
+      "kind": "model",
+      "source": "polyhaven",
+      "polyhavenId": "wooden_crate_01",
+      "resolution": "1k",
+      "author": "James Ray Cock",
+      "license": "CC0-1.0",
+      "url": "https://polyhaven.com/a/wooden_crate_01"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "task": "T7",
+  "phase": "red",
+  "at": "2026-11-01T23:13:11+08:00",
+  "command": "npx vitest run scripts/assets/manifest-ls.test.ts scripts/assets/validate.test.ts",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "     51|     expect(r.stdout).toBe('')\n     52|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯\n\n FAIL  scripts/assets/validate.test.ts > validate > 非空的一般檔案 → exit 0\nAssertionError: expected '' to be '/var/folders/yz/wnl6_tdd3vq0nfn0rbnhh…' // Object.is equality\n\n- Expected\n+ Received\n\n- /var/folders/yz/wnl6_tdd3vq0nfn0rbnhhmnc0000gn/T/validate-nQHwzC/sky.hdr\n\n ❯ scripts/assets/validate.test.ts:59:29\n     57|     const r = run(file)\n     58|     expect(r.status).toBe(0)\n     59|     expect(r.stdout.trim()).toBe(file)\n       |                             ^\n     60|   })\n     61|\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯\n\n FAIL  scripts/assets/validate.test.ts > validate > 不存在的路徑 → exit≠0\nAssertionError: expected +0 not to be +0 // Object.is equality\n ❯ scripts/assets/validate.test.ts:64:26\n     62|   it('不存在的路徑 → exit≠0', () => {\n     63|     const r = run(join(tmp(), 'nope.hdr'))\n     64|     expect(r.status).not.toBe(0)\n       |                          ^\n     65|   })\n     66| })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯\n\n\n Test Files  2 failed (2)\n      Tests  9 failed (9)\n   Start at  23:13:14\n   Duration  653ms (tests 65%, import 27%, transform 7%, worker 1%)"
+}

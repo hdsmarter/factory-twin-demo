@@ -1,0 +1,9 @@
+{
+  "task": "T10",
+  "phase": "red",
+  "at": "2026-11-01T23:35:45+08:00",
+  "command": "npx vitest run src/domain",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "- Expected:\nfalse\n\n+ Received:\nundefined\n\n ❯ src/domain/motion/robotArm.test.ts:66:50\n     64|     const atPick = timeline.filter((t) => dist(robotArmPose(p, t).tool…\n     65|     const atPlace = timeline.filter((t) => dist(robotArmPose(p, t).too…\n     66|     expect(robotArmPose(p, atPick[0]!).carrying).toBe(false)\n       |                                                  ^\n     67|     for (const t of timeline.filter((t) => t > atPick.at(-1)! && t < a…\n     68|     expect(robotArmPose(p, atPlace.at(-1)!).carrying).toBe(false)\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/15]⎯\n\n FAIL  src/domain/motion/time.test.ts > cyclePhase > 負的週期倍數回傳 +0（不是 -0），與 t=0 完全相同\nAssertionError: expected false to be true // Object.is equality\n\n- Expected\n+ Received\n\n- true\n+ false\n\n ❯ src/domain/motion/time.test.ts:6:45\n      4| describe('cyclePhase', () => {\n      5|   it('負的週期倍數回傳 +0（不是 -0），與 t=0 完全相同', () => {\n      6|     expect(Object.is(cyclePhase(-6, 6), 0)).toBe(true)\n       |                                             ^\n      7|     expect(Object.is(cyclePhase(-12, 6), 0)).toBe(true)\n      8|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/15]⎯\n\n\n Test Files  6 failed | 1 passed (7)\n      Tests  15 failed | 33 passed (48)\n   Start at  23:36:04\n   Duration  3.18s (transform 64%, worker 20%, import 11%, tests 5%)"
+}

@@ -1,0 +1,9 @@
+{
+  "task": "T12",
+  "phase": "red",
+  "at": "2026-11-01T23:35:43+08:00",
+  "command": "npx vitest run scripts/assets",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "\n ❯ scripts/assets/pipeline.test.ts:89:22\n     87|   it('Poly Haven 缺 arm → exit 1、stderr 指出 arm', () => {\n     88|     const r = fetchTexture({ Diffuse: jpg('diff'), nor_gl: jpg('nor_gl…\n     89|     expect(r.status).toBe(1)\n       |                      ^\n     90|     expect(r.stderr).toContain('arm')\n     91|     expect(r.stdout).toBe('')\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯\n\n FAIL  scripts/assets/validate.test.ts > validate > texture 目錄缺 arm.jpg → exit≠0、stderr 指出 arm.jpg\nAssertionError: expected +0 not to be +0 // Object.is equality\n ❯ scripts/assets/validate.test.ts:73:26\n     71|     writeFileSync(join(dir, 'rough.jpg'), 'jpg')\n     72|     const r = run(dir)\n     73|     expect(r.status).not.toBe(0)\n       |                          ^\n     74|     expect(r.stderr).toContain('arm.jpg')\n     75|     expect(r.stdout).toBe('')\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯\n\n FAIL  scripts/assets/validate.test.ts > validate > texture 目錄有 0 byte 的必備貼圖 → exit≠0\nAssertionError: expected +0 not to be +0 // Object.is equality\n ❯ scripts/assets/validate.test.ts:83:26\n     81|     for (const m of TEXTURE_MAPS) writeFileSync(join(dir, `${m}.jpg`),…\n     82|     const r = run(dir)\n     83|     expect(r.status).not.toBe(0)\n       |                          ^\n     84|     expect(r.stderr).toContain('nor_gl.jpg')\n     85|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯\n\n\n Test Files  4 failed (4)\n      Tests  14 failed | 37 passed (51)\n   Start at  23:36:04\n   Duration  3.86s (tests 58%, import 15%, transform 15%, worker 12%)"
+}

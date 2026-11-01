@@ -1,0 +1,8 @@
+{
+  "scenario": "S1",
+  "at": "2026-11-01T23:43:48+08:00",
+  "command": "npx vitest run src/domain/parseLayout.test.ts src/domain/factoryLayout.test.ts src/domain/geometry.test.ts -t @S1|INVALID|geometry|旋轉|areaBounds|取放高度|通過驗證",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  3 passed (3)\n      Tests  18 passed | 6 skipped (24)\n   Start at  23:43:50\n   Duration  127ms (import 38%, transform 31%, worker 18%, tests 13%)"
+}

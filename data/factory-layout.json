@@ -1,0 +1,81 @@
+{
+  "id": "SITE-DEMO",
+  "name": "示範工廠",
+  "bounds": { "width": 36, "depth": 20, "height": 9 },
+  "cycleSeconds": 6,
+  "areas": [
+    {
+      "id": "AREA-WH",
+      "name": "物料倉",
+      "lines": [
+        {
+          "id": "LINE-KIT",
+          "name": "備料線",
+          "cells": [
+            {
+              "id": "CELL-KIT",
+              "name": "備料儲位",
+              "equipment": [
+                { "id": "RACK-A1", "name": "原料料架 A1", "model": "RACK-STEEL", "footprint": { "x": -12, "z": -8.4, "width": 4, "depth": 1.2, "rotation": 0 } },
+                { "id": "RACK-A2", "name": "原料料架 A2", "model": "RACK-STEEL", "footprint": { "x": -6, "z": -8.4, "width": 4, "depth": 1.2, "rotation": 0 } },
+                { "id": "RACK-A3", "name": "半成品料架 A3", "model": "RACK-STEEL", "footprint": { "x": 0, "z": -8.4, "width": 4, "depth": 1.2, "rotation": 0 } }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "AREA-ASM",
+      "name": "組裝區",
+      "lines": [
+        {
+          "id": "LINE-1",
+          "name": "一號組裝線",
+          "cells": [
+            {
+              "id": "CELL-10",
+              "name": "上料加工",
+              "equipment": [
+                { "id": "CNC-01", "name": "CNC 加工機 01", "model": "CNC-MILL", "footprint": { "x": -11, "z": -3, "width": 3.2, "depth": 2.2, "rotation": 0 } },
+                { "id": "CONV-01", "name": "入料輸送帶", "model": "CONV-BELT", "footprint": { "x": -9, "z": 0, "width": 8, "depth": 0.9, "rotation": 0 }, "params": { "itemCount": 4 } }
+              ]
+            },
+            {
+              "id": "CELL-20",
+              "name": "移載",
+              "equipment": [
+                {
+                  "id": "ARM-01", "name": "移載手臂 01", "model": "ARM-6AX",
+                  "footprint": { "x": -4, "z": -1.15, "width": 1.1, "depth": 1.1, "rotation": 0 },
+                  "params": { "pickDx": -1.2, "pickDz": 1.15, "pickY": 1.0, "placeDx": 1.2, "placeDz": 1.15, "placeY": 1.0 }
+                }
+              ]
+            },
+            {
+              "id": "CELL-30",
+              "name": "視覺檢測",
+              "equipment": [
+                { "id": "CONV-02", "name": "檢測輸送帶", "model": "CONV-BELT", "footprint": { "x": 1.2, "z": 0, "width": 8, "depth": 0.9, "rotation": 0 }, "params": { "itemCount": 4 } },
+                { "id": "INSP-01", "name": "視覺檢測站 01", "model": "INSP-VISION", "footprint": { "x": 1.2, "z": 0, "width": 1.8, "depth": 1.8, "rotation": 0 } }
+              ]
+            },
+            {
+              "id": "CELL-40",
+              "name": "下料堆疊",
+              "equipment": [
+                {
+                  "id": "ARM-02", "name": "下料手臂 02", "model": "ARM-6AX",
+                  "footprint": { "x": 6.4, "z": -1.15, "width": 1.1, "depth": 1.1, "rotation": 0 },
+                  "params": { "pickDx": -1.2, "pickDz": 1.15, "pickY": 1.0, "placeDx": 1.3, "placeDz": -0.9, "placeY": 0.45 }
+                },
+                { "id": "PAL-01", "name": "成品棧板站", "model": "PALLET-STATION", "footprint": { "x": 7.7, "z": -2.05, "width": 1.2, "depth": 1.0, "rotation": 0 } },
+                { "id": "RACK-B1", "name": "成品料架 B1", "model": "RACK-STEEL", "footprint": { "x": 12, "z": -3.5, "width": 4, "depth": 1.2, "rotation": 90 } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

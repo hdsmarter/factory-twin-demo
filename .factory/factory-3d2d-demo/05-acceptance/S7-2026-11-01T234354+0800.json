@@ -1,0 +1,8 @@
+{
+  "scenario": "S7",
+  "at": "2026-11-01T23:43:54+08:00",
+  "command": "npx vitest run src/domain/motion/conveyor.test.ts",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  1 passed (1)\n      Tests  10 passed (10)\n   Start at  23:43:54\n   Duration  168ms (tests 81%, import 8%, transform 8%, worker 3%)"
+}

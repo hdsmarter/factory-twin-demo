@@ -1,0 +1,9 @@
+{
+  "task": "T3",
+  "phase": "red",
+  "at": "2026-11-01T23:13:58+08:00",
+  "command": "npx vitest run src/domain/motion/conveyor.test.ts",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "\n ❯ src/domain/motion/conveyor.test.ts:45:19\n     43|       prev = cur\n     44|     }\n     45|     expect(wraps).toBe(p.itemCount) // 一個週期每個料件剛好走完一趟\n       |                   ^\n     46|   })\n     47| })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯\n\n FAIL  src/domain/motion/conveyor.test.ts > conveyorItems 邊界 > 料件在週期起點等距分布\nAssertionError: expected [] to deeply equal [ +0, 1.5, 3, 4.5 ]\n\n- Expected\n+ Received\n\n- [\n-   0,\n-   1.5,\n-   3,\n-   4.5,\n- ]\n+ []\n\n ❯ src/domain/motion/conveyor.test.ts:51:52\n     49| describe('conveyorItems 邊界', () => {\n     50|   it('料件在週期起點等距分布', () => {\n     51|     expect(conveyorItems(base, 0).map((i) => i.s)).toEqual([0, 1.5, 3,…\n       |                                                    ^\n     52|   })\n     53|   it('負時間與正時間一樣有定義（循環）', () => {\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯\n\n\n Test Files  1 failed (1)\n      Tests  9 failed | 1 passed (10)\n   Start at  23:13:59\n   Duration  167ms (transform 48%, import 23%, tests 22%, worker 7%)"
+}

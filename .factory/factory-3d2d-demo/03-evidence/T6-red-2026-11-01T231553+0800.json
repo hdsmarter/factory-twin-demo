@@ -1,0 +1,9 @@
+{
+  "task": "T6",
+  "phase": "red",
+  "at": "2026-11-01T23:15:53+08:00",
+  "command": "npx vitest run src/domain/factoryLayout.test.ts",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "AssertionError: expected [ { code: 'INVALID_SHAPE', …(1) } ] to deeply equal []\n\n- Expected\n+ Received\n\n- []\n+ [\n+   {\n+     \"code\": \"INVALID_SHAPE\",\n+     \"message\": \"產線配置結構不合法（需含 bounds、cycleSeconds、areas→lines→cells→equipment）\",\n+   },\n+ ]\n\n ❯ src/domain/factoryLayout.test.ts:12:34\n     10|\n     11|   it('@S1 通過驗證並涵蓋展示所需的設備種類', () => {\n     12|     expect(r.ok ? [] : r.errors).toEqual([])\n       |                                  ^\n     13|     if (!r.ok) return\n     14|     const kinds = r.placed.map((p) => p.kind)\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯\n\n FAIL  src/domain/factoryLayout.test.ts > data/factory-layout.json（通用組裝產線） > 機械手臂都設定了取料點與放料點\nError: layout invalid\n ❯ src/domain/factoryLayout.test.ts:22:22\n     20|\n     21|   it('機械手臂都設定了取料點與放料點', () => {\n     22|     if (!r.ok) throw new Error('layout invalid')\n       |                      ^\n     23|     for (const arm of r.placed.filter((p) => p.kind === 'robot-arm')) {\n     24|       for (const k of ['pickDx', 'pickDz', 'pickY', 'placeDx', 'placeD…\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯\n\n\n Test Files  1 failed (1)\n      Tests  2 failed (2)\n   Start at  23:15:54\n   Duration  203ms (transform 62%, import 20%, tests 12%, worker 6%)"
+}

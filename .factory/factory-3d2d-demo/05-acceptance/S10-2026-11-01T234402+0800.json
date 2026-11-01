@@ -1,0 +1,8 @@
+{
+  "scenario": "S10",
+  "at": "2026-11-01T23:44:02+08:00",
+  "command": "npx vitest run scripts/assets/manifest-ls.test.ts scripts/assets/pipeline.test.ts",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  2 passed (2)\n      Tests  11 passed (11)\n   Start at  23:44:02\n   Duration  328ms (tests 95%, import 2%, transform 2%, worker 1%)"
+}

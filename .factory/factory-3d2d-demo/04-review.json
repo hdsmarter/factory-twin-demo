@@ -1,0 +1,346 @@
+{
+  "reviewers": [
+    {
+      "id": "A",
+      "lens": "正確性／測試品質",
+      "agent": "factory-reviewer（獨立 context）"
+    },
+    {
+      "id": "B",
+      "lens": "設計原則",
+      "agent": "factory-reviewer（獨立 context）"
+    }
+  ],
+  "findings": [
+    {
+      "id": "C1",
+      "severity": "P1",
+      "principle": "T3",
+      "file": "e2e/s11-scene.spec.ts",
+      "line": 29,
+      "summary": "S11 只比對外層 group 的 equipmentId，View 畫空也會通過；截圖無斷言",
+      "status": "fixed",
+      "note": "T11：Probe 回報每台設備子樹的可見網格數與廠房網格數；e2e 斷言每台 >0、廠房 >0、畫布亮度標準差 >10。突變測試（conveyor 換成 () => null）確認會紅（CONV-01 Received 0），已還原。"
+    },
+    {
+      "id": "C2",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/domain/parseLayout.ts",
+      "line": 27,
+      "summary": "負寬度可繞過邊界檢查",
+      "status": "fixed",
+      "note": "T10：寬深必須為有限正數；新增 @S5 負寬度測試。"
+    },
+    {
+      "id": "C3",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/domain/parseLayout.ts",
+      "line": 9,
+      "summary": "params 非數值、bounds 缺欄、id/name 空字串未擋",
+      "status": "fixed",
+      "note": "T10：isSiteShape 驗 bounds 三邊為正；逐台 equipmentShapeProblem；新增 7 個 INVALID_SHAPE 測試。"
+    },
+    {
+      "id": "C4",
+      "severity": "P2",
+      "principle": "T3",
+      "file": "src/domain/motion/robotArm.ts",
+      "line": 126,
+      "summary": "IK 不可達或超出關節限制時不回報",
+      "status": "open",
+      "note": "部分處理：simulate.test 新增「配置中每台手臂整個週期關節角在限制內」。不可達配置的驗證（新錯誤碼）屬新業務規則，排入階段 4 與使用者確認後補 Scenario。"
+    },
+    {
+      "id": "C5",
+      "severity": "P2",
+      "principle": "T3",
+      "file": "src/domain/parseLayout.test.ts",
+      "line": 39,
+      "summary": "S1 只測單一分支階層",
+      "status": "fixed",
+      "note": "T10：2 區域、3 產線、4 工作站，整個陣列 toEqual {id, kind, path}。"
+    },
+    {
+      "id": "C6",
+      "severity": "P2",
+      "principle": "U1",
+      "file": "scripts/assets/pipeline.sh",
+      "line": 14,
+      "summary": "S10 缺 pipeline 層級測試",
+      "status": "fixed",
+      "note": "T12：pipeline.test.ts 以缺 license 清冊跑 bash pipeline.sh，斷言 status≠0 與 stderr 含 id。"
+    },
+    {
+      "id": "C7",
+      "severity": "P2",
+      "principle": "T3",
+      "file": "scripts/assets/fetch.mjs",
+      "line": 62,
+      "summary": "貼圖只要有任一張就算成功",
+      "status": "fixed",
+      "note": "T12：texture-maps.json 集中必備清單，fetch/validate/assets-ready 逐張檢查。"
+    },
+    {
+      "id": "C8",
+      "severity": "P2",
+      "principle": "P3",
+      "file": "src/App.tsx",
+      "line": 54,
+      "summary": "道具 404 會讓整個 Canvas 崩潰",
+      "status": "fixed",
+      "note": "T11：FittedModel 各自包 ErrorBoundary + Suspense；新增 e2e：metal_toolbox.glb 回 404 時所有設備仍有網格。"
+    },
+    {
+      "id": "C9",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/scene/equipment/Conveyor.tsx",
+      "line": 17,
+      "summary": "itemCount 預設值兩處",
+      "status": "fixed",
+      "note": "T10/T11：DEFAULT_CONVEYOR_ITEMS 集中於 domain/specs.ts；simulate.test 驗預設。"
+    },
+    {
+      "id": "C10",
+      "severity": "P3",
+      "principle": "T3",
+      "file": "src/domain/parseLayout.test.ts",
+      "line": 64,
+      "summary": "S4 未真正貼齊、EPSILON 無保護",
+      "status": "fixed",
+      "note": "T10：EDGE-Z 改成 z∈[4,5]；新增 20.2/9.8/0.6 浮點貼齊案例（前提斷言確認無容差時會超出）。"
+    },
+    {
+      "id": "C11",
+      "severity": "P3",
+      "principle": "B1",
+      "file": "src/domain/motion/time.ts",
+      "line": 3,
+      "summary": "-0 與週期邊界",
+      "status": "fixed",
+      "note": "T10：-0 正規化並加 time.test.ts。S6 仍以 1e-9 容差比較。"
+    },
+    {
+      "id": "C12",
+      "severity": "P3",
+      "principle": "B1",
+      "file": "src/scene/equipment/Conveyor.tsx",
+      "line": 33,
+      "summary": "非整數長度皮帶貼圖週期接縫",
+      "status": "fixed",
+      "note": "T11：貼圖鋪 round(length) 片，offset = phase×tiles mod 1。"
+    },
+    {
+      "id": "C13",
+      "severity": "P3",
+      "principle": "B1",
+      "file": "scripts/assets/manifest-ls.mjs",
+      "line": 30,
+      "summary": "id 未驗重複與字元",
+      "status": "fixed",
+      "note": "T12：id 唯一且符合 ^[a-z0-9_]+$。"
+    },
+    {
+      "id": "C14",
+      "severity": "P3",
+      "principle": "T1",
+      "file": "src/domain/parseLayout.test.ts",
+      "line": 88,
+      "summary": "INVALID_SHAPE 測試以 TypeError 失敗、覆蓋不足",
+      "status": "fixed",
+      "note": "T10：改用 toContainEqual 並加入 C2/C3 輸入。"
+    },
+    {
+      "id": "C15",
+      "severity": "P3",
+      "principle": "T3",
+      "file": "e2e/s11-scene.spec.ts",
+      "line": 13,
+      "summary": "e2e 讀檔路徑相對 cwd",
+      "status": "fixed",
+      "note": "T11：new URL(..., import.meta.url)。"
+    },
+    {
+      "id": "D1",
+      "severity": "P2",
+      "principle": "D1, DD4, S1",
+      "file": "src/scene/Building.tsx",
+      "line": 14,
+      "summary": "區域外框計算在 3D 層，階段 4 SVG 需重寫",
+      "status": "fixed",
+      "note": "src/domain/geometry.ts（footprintExtent、footprintRect、areaBounds、AREA_MARGIN）+ 測試；Building 改用之。"
+    },
+    {
+      "id": "D2",
+      "severity": "P2",
+      "principle": "S3 (OCP), DD1",
+      "file": "src/domain/simulate.ts",
+      "line": 34,
+      "summary": "手臂尺寸綁 kind 而非型號",
+      "status": "open",
+      "note": "目前只有一款手臂；新增第二款手臂型號時改為 catalog 帶 dimensions。"
+    },
+    {
+      "id": "D3",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/scene/equipment/Conveyor.tsx",
+      "line": 10,
+      "summary": "皮帶高度與取放高度隱性耦合",
+      "status": "fixed",
+      "note": "規格常數移到 domain/specs.ts，各視圖共用；factoryLayout.test 斷言取放高度與規格一致。ConveyorItem 未加 y。"
+    },
+    {
+      "id": "D4",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/domain/simulate.ts",
+      "line": 27,
+      "summary": "itemCount 預設值兩處",
+      "status": "fixed",
+      "note": "同 C9。"
+    },
+    {
+      "id": "D5",
+      "severity": "P2",
+      "principle": "S3 (OCP)",
+      "file": "src/domain/simulate.ts",
+      "line": 6,
+      "summary": "新增 kind 仍需改 simulate.ts，與 plan 宣稱不符",
+      "status": "open",
+      "note": "plan 已更新說明；拆成每 kind 一個 motion 模組留待新增第 5 種設備時做。"
+    },
+    {
+      "id": "D6",
+      "severity": "P2",
+      "principle": "S3 (OCP), DD1",
+      "file": "src/scene/equipment/Machine.tsx",
+      "line": 148,
+      "summary": "variant 為 string 且靜默退回",
+      "status": "fixed",
+      "note": "EquipmentModel 改為以 kind 區分的聯集；視圖表用 mapped type，移除 ?? 退回。"
+    },
+    {
+      "id": "D7",
+      "severity": "P2",
+      "principle": "D1, U1",
+      "file": "src/scene/materials.ts",
+      "line": 11,
+      "summary": "scene 與管線的資產契約未核對",
+      "status": "open",
+      "note": "部分處理：必備貼圖清單已集中（T12）。scene 資產 id 與 manifest 的交叉檢查測試尚未做。"
+    },
+    {
+      "id": "D8",
+      "severity": "P2",
+      "principle": "DIP",
+      "file": "src/App.tsx",
+      "line": 54,
+      "summary": "道具 Suspense/ErrorBoundary 未落實",
+      "status": "fixed",
+      "note": "同 C8。"
+    },
+    {
+      "id": "D9",
+      "severity": "P2",
+      "principle": "不硬編碼, D1",
+      "file": "src/scene/Props.tsx",
+      "line": 4,
+      "summary": "道具以絕對座標寫死",
+      "status": "open",
+      "note": "純裝飾、目前配置固定；改 bounds 時再改為相對牆面錨點的資料檔。"
+    },
+    {
+      "id": "D10",
+      "severity": "P3",
+      "principle": "D1",
+      "file": "src/scene/equipment/RobotArm.tsx",
+      "line": 40,
+      "summary": "夾持判定只在 3D 層",
+      "status": "fixed",
+      "note": "RobotArmPose.carrying 由 domain 決定並有 @S8 測試。"
+    },
+    {
+      "id": "D11",
+      "severity": "P3",
+      "principle": "DIP",
+      "file": "src/scene/clock.tsx",
+      "line": 9,
+      "summary": "SimClock 介面不利逐格錄影與鏡頭腳本",
+      "status": "open",
+      "note": "階段 5 處理。"
+    },
+    {
+      "id": "D12",
+      "severity": "P3",
+      "principle": "DD1",
+      "file": "src/domain/simulate.ts",
+      "line": 36,
+      "summary": "取放偏移是世界座標，不隨 rotation",
+      "status": "open",
+      "note": "目前手臂皆 rotation 0；需要時改為本地座標並補測試。"
+    },
+    {
+      "id": "D13",
+      "severity": "P3",
+      "principle": "DD1, T2",
+      "file": "src/domain/layout.ts",
+      "line": 54,
+      "summary": "plan 通用語言與實作不一致",
+      "status": "fixed",
+      "note": "02-plan.md 已更新 glossary、回傳形狀與契約變更紀錄。"
+    },
+    {
+      "id": "D14",
+      "severity": "P3",
+      "principle": "DD1, U3",
+      "file": "src/domain/layout.ts",
+      "line": 24,
+      "summary": "params 無 schema",
+      "status": "open",
+      "note": "與 C4 一起排入階段 4。"
+    },
+    {
+      "id": "D15",
+      "severity": "P3",
+      "principle": "不硬編碼（i18n）",
+      "file": "src/domain/parseLayout.ts",
+      "line": 54,
+      "summary": "domain 錯誤訊息寫死中文",
+      "status": "open",
+      "note": "內部展示僅 zh-TW；需多語系時改為 code + 參數。"
+    },
+    {
+      "id": "D16",
+      "severity": "P3",
+      "principle": "Y2",
+      "file": "src/scene/materials.ts",
+      "line": 6,
+      "summary": "未使用的資產與字典鍵",
+      "status": "fixed",
+      "note": "移除 metal_plate、rough、i18n loading。"
+    },
+    {
+      "id": "D17",
+      "severity": "P3",
+      "principle": "U1",
+      "file": "scripts/assets/pipeline.sh",
+      "line": 5,
+      "summary": "sh/pipefail 與相對路徑",
+      "status": "fixed",
+      "note": "bash shebang、cd 到 repo 根、在 /tmp 實跑 exit 0。"
+    },
+    {
+      "id": "D18",
+      "severity": "P3",
+      "principle": "不硬編碼, D3",
+      "file": "src/theme/tokens.ts",
+      "line": 38,
+      "summary": "開場相機寫在 token",
+      "status": "open",
+      "note": "階段 5 移到 data/shots.json。"
+    }
+  ]
+}

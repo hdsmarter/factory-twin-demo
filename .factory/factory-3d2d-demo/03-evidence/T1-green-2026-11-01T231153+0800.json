@@ -1,0 +1,9 @@
+{
+  "task": "T1",
+  "phase": "green",
+  "at": "2026-11-01T23:11:53+08:00",
+  "command": "npx tsc --noEmit -p .",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": ""
+}

@@ -1,0 +1,9 @@
+{
+  "task": "T11",
+  "phase": "green",
+  "at": "2026-11-01T23:41:29+08:00",
+  "command": "npx playwright test e2e/s11-scene.spec.ts --reporter=line",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "Running 2 tests using 1 worker\n\n[1/2] [chromium] › e2e/s11-scene.spec.ts:41:1 › @S11 開啟展示頁看到寫實 3D 產線\n[WebServer] 下午11:41:33 [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.\n\n[WebServer] 下午11:41:34 [vite] (client) [console.warn] THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.\n\n[2/2] [chromium] › e2e/s11-scene.spec.ts:65:1 › @S11 某個裝飾道具載入失敗時，產線設備仍完整呈現\n[WebServer] 下午11:41:46 [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.\n\n[WebServer] 下午11:41:46 [vite] (client) [Unhandled error] Error: Could not load /assets/models/metal_toolbox.glb: fetch for \"http://localhost:5188/assets/models/metal_toolbox.glb\" responded with 404: Not Found\n[WebServer]  > node_modules/@react-three/fiber/dist/events-e51d7528.esm.js:1458:35\n[WebServer]  > Object._onError [as onError] node_modules/three-stdlib/loaders/GLTFLoader.js:82:8\n[WebServer]  > node_modules/three/build/three.core.js:45791:38\n[WebServer] \n\n[WebServer] 下午11:41:46 [vite] (client) [console.warn] [scene] 子場景載入失敗，已略過： Could not load /assets/models/metal_toolbox.glb: fetch for \"http://localhost:5188/assets/models/metal_toolbox.glb\" responded with 404: Not Found\n\n[WebServer] 下午11:41:46 [vite] (client) [console.warn] THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.\n\n  2 passed (22.5s)"
+}

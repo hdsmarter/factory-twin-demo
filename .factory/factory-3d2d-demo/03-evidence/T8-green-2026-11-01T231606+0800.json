@@ -1,0 +1,9 @@
+{
+  "task": "T8",
+  "phase": "green",
+  "at": "2026-11-01T23:16:06+08:00",
+  "command": "npx vitest run scripts/assets/assets-ready.test.ts",
+  "exit_code": 0,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  1 passed (1)\n      Tests  16 passed (16)\n   Start at  23:16:07\n   Duration  157ms (tests 50%, import 28%, transform 19%, worker 3%)"
+}

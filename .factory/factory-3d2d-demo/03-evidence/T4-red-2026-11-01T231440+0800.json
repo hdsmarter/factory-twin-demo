@@ -1,0 +1,9 @@
+{
+  "task": "T4",
+  "phase": "red",
+  "at": "2026-11-01T23:14:40+08:00",
+  "command": "npx vitest run src/domain/motion/robotArm.test.ts",
+  "exit_code": 1,
+  "fingerprint": "nohead+e3b0c44298fc",
+  "output_tail": "AssertionError: base @ t=0: expected 9 to be less than or equal to 3.141592653589793\n ❯ src/domain/motion/robotArm.test.ts:45:50\n     43|         const [min, max] = JOINT_LIMITS[joint]\n     44|         expect(pose[joint], `${joint} @ t=${t}`).toBeGreaterThanOrEqua…\n     45|         expect(pose[joint], `${joint} @ t=${t}`).toBeLessThanOrEqual(m…\n       |                                                  ^\n     46|       }\n     47|     }\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯\n\n FAIL  src/domain/motion/robotArm.test.ts > robotArmPose > 回報的夾爪位置等於關節角的正向運動學結果（畫面與數據一致）\nAssertionError: expected NaN to be less than 1e-9\n ❯ src/domain/motion/robotArm.test.ts:53:53\n     51|     for (const t of timeline.filter((_, i) => i % 25 === 0)) {\n     52|       const pose = robotArmPose(p, t)\n     53|       expect(dist(pose.tool, forwardTool(p, pose))).toBeLessThan(1e-9)\n       |                                                     ^\n     54|     }\n     55|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯\n\n FAIL  src/domain/motion/robotArm.test.ts > robotArmPose > 動作連續：相鄰取樣之間夾爪移動距離有上限（不瞬移）\nAssertionError: expected NaN to be less than 0.05\n ❯ src/domain/motion/robotArm.test.ts:59:96\n     57|   it('動作連續：相鄰取樣之間夾爪移動距離有上限（不瞬移）', () => {\n     58|     for (let i = 1; i < timeline.length; i++) {\n     59|       expect(dist(robotArmPose(p, timeline[i]!).tool, robotArmPose(p, …\n       |                                                                                                ^\n     60|     }\n     61|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯\n\n\n Test Files  1 failed (1)\n      Tests  5 failed (5)\n   Start at  23:14:41\n   Duration  146ms (transform 50%, import 25%, tests 17%, worker 8%)"
+}
