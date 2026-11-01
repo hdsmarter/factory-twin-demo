@@ -230,6 +230,75 @@
         "T9"
       ],
       "test_command": "npx playwright test e2e"
+    },
+    {
+      "id": "T11",
+      "title": "審查修正（domain）：actors 非陣列、零長度路線、手臂路徑取樣、島嶼海岸起伏邊界、AGV/人員尺寸入 domain",
+      "role": "implementer",
+      "scenarios": [
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "S6"
+      ],
+      "files": [
+        "src/domain/parseLayout.ts",
+        "src/domain/parseLayout.test.ts",
+        "src/domain/actors.ts",
+        "src/domain/actors.test.ts",
+        "src/domain/motion/robotArm.ts",
+        "src/domain/motion/robotArm.test.ts",
+        "src/domain/environment.ts",
+        "src/domain/specs.ts"
+      ],
+      "depends_on": [
+        "T10"
+      ],
+      "test_command": "npx vitest run src/domain"
+    },
+    {
+      "id": "T12",
+      "title": "審查修正（2D）：S8 改驗實際繪製圖元、AGV 尺寸共用、2D 註冊表、svg aria-hidden",
+      "role": "implementer",
+      "scenarios": [
+        "S8",
+        "S9"
+      ],
+      "files": [
+        "src/view2d/IsoScene.tsx",
+        "src/view2d/IsoScene.test.ts",
+        "src/view2d/shapes.tsx",
+        "src/view2d/Peep.tsx"
+      ],
+      "depends_on": [
+        "T11"
+      ],
+      "test_command": "npx vitest run src/view2d"
+    },
+    {
+      "id": "T13",
+      "title": "審查修正（整合）：單一時間來源、resize、E2E 加強（網格>0、切回 3D 仍在動、屋頂網格、poll）",
+      "role": "implementer",
+      "scenarios": [
+        "S9",
+        "S10",
+        "S12"
+      ],
+      "files": [
+        "src/App.tsx",
+        "src/scene/clock.tsx",
+        "src/scene/Factory.tsx",
+        "src/scene/Probe.tsx",
+        "src/scene/actors/Agv.tsx",
+        "src/theme/actorTokens.ts",
+        "e2e/island.spec.ts",
+        "src/scene/actors/Worker.tsx"
+      ],
+      "depends_on": [
+        "T11"
+      ],
+      "test_command": "npx playwright test e2e"
     }
   ]
 }

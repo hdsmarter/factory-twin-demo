@@ -1,5 +1,6 @@
 import { footprintRect } from './geometry'
 import type { Actor, Catalog, EnvironmentSpec, Equipment, LayoutError, ParseResult, PlacedEquipment, Site } from './layout'
+import { COAST_WOBBLE } from './environment'
 import { armParamsOf, armReachProblem } from './motion/robotArm'
 
 const EPSILON = 1e-9
@@ -55,6 +56,9 @@ function actorShapeProblem(a: unknown): string | null {
     dwell += (w.dwell as number | undefined) ?? 0
   }
   if (dwell >= (a.cycleSeconds as number)) return `移動體 ${a.id} 的停留時間總和必須小於週期`
+  const route = a.route as { x: number; z: number }[]
+  const length = route.reduce((s, w, i) => s + Math.hypot(route[(i + 1) % route.length]!.x - w.x, route[(i + 1) % route.length]!.z - w.z), 0)
+  if (!(length > 0)) return `移動體 ${a.id} 的路線總長必須大於 0`
   return null
 }
 
@@ -63,7 +67,8 @@ function environmentShapeProblem(e: unknown): string | null {
   if (!isObject(e) || !isObject(e.island)) return '環境設定需含 island'
   const i = e.island
   if (![i.radius, i.plateauRadius, i.beachWidth].every(isPositive) || !isFiniteNumber(i.seed)) return '島嶼半徑、平台、沙灘寬度必須為正數，seed 為數值'
-  if ((i.plateauRadius as number) >= (i.radius as number) - (i.beachWidth as number)) return '島嶼平台必須小於陸地（半徑扣除沙灘）'
+  // 海岸線依方向起伏 ±COAST_WOBBLE，以最小可能的陸地半徑驗證
+  if ((i.plateauRadius as number) >= (i.radius as number) * (1 - COAST_WOBBLE) - (i.beachWidth as number)) return '島嶼平台必須小於最小陸地（海岸起伏後的半徑扣除沙灘）'
   if (!isPositive(e.dayCycleSeconds) || !isPositive(e.waveSeconds)) return '日週期與海浪週期必須為正數'
   const ratio = (e.dayCycleSeconds as number) / (e.waveSeconds as number)
   if (Math.abs(ratio - Math.round(ratio)) > 1e-9) return '日週期必須是海浪週期的整數倍'
@@ -127,6 +132,7 @@ export function parseLayout(raw: unknown, catalog: Catalog): ParseResult {
         }
 
   const actors: Actor[] = []
+  if (raw.actors !== undefined && !Array.isArray(raw.actors)) errors.push({ code: 'INVALID_SHAPE', message: 'actors 必須是陣列' })
   for (const candidate of (Array.isArray(raw.actors) ? raw.actors : []) as unknown[]) {
     const problem = actorShapeProblem(candidate)
     if (problem) {

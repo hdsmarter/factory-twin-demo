@@ -1,4 +1,4 @@
-import type { Footprint, PlacedEquipment } from '../domain/layout'
+import type { EquipmentKind, EquipmentVariant, Footprint, PlacedEquipment } from '../domain/layout'
 import { ARM_6AX_DIMENSIONS as ARM, type RobotArmPose } from '../domain/motion/robotArm'
 import { directionOf } from '../domain/motion/time'
 import { isoProject } from '../domain/projection'
@@ -162,6 +162,21 @@ const RACK_TOP = 1.9
 const RACK_UNIT = 0.92
 const WP = { length: 0.32, width: 0.24 }
 
+const ORIGIN: XZ = { x: 0, z: 0 }
+
+/**
+ * 把子圖（以世界原點為錨點繪製）平移到世界座標 (x, y, z) 的投影點。
+ * isoProject 是無偏移的線性映射，平移 = 在該點繪製；translate 即圖元的實際錨點（data-part 供測試定位）。
+ */
+export function At({ part, x, y, z, children }: { part?: string; x: number; y: number; z: number; children: React.ReactNode }) {
+  const p = isoProject(x, y, z)
+  return (
+    <g data-part={part} transform={`translate(${p.u} ${p.v})`}>
+      {children}
+    </g>
+  )
+}
+
 /** 料件（底面中心在 c、高度 y） */
 function Workpiece({ c, y }: { c: XZ; y: number }) {
   return <Prism base={orientedRect(c, 0, WP.length, WP.width)} y0={y} y1={y + WORKPIECE_HEIGHT} tone={tone.workpiece} />
@@ -192,7 +207,9 @@ const conveyor: Drawer = (pe, s) => {
         <polyline key={lx} points={[pt(at(lx).x - ax.z * (D / 2 - 0.1), BELT_TOP, at(lx).z + ax.x * (D / 2 - 0.1)), pt(at(lx).x + ax.z * (D / 2 - 0.1), BELT_TOP, at(lx).z - ax.x * (D / 2 - 0.1))].join(' ')} fill="none" {...thin} stroke={tone.belt.right} />
       ))}
       {items.map((c, i) => (
-        <Workpiece key={i} c={c} y={BELT_TOP} />
+        <At key={i} part="conveyor-item" x={c.x} y={BELT_TOP} z={c.z}>
+          <Workpiece c={ORIGIN} y={0} />
+        </At>
       ))}
     </g>
   )
@@ -334,10 +351,11 @@ function Arm({ f, pose }: { f: Footprint; pose: RobotArmPose | undefined }) {
   )
   const gap = FINGER_OPEN + (FINGER_CLOSED - FINGER_OPEN) * pose.grip
   const perp = { x: -dir.z, z: dir.x }
+  // 夾爪（手指與夾持中的料件）以工具尖端為原點繪製，再平移到 pose.tool 的投影
   const finger = (k: number) => {
-    const fx = tip[0] + perp.x * gap * k
-    const fz = tip[2] + perp.z * gap * k
-    return line([[fx, tip[1] + 0.14, fz], [fx, tip[1], fz]], 0.05, ink)
+    const fx = perp.x * gap * k
+    const fz = perp.z * gap * k
+    return line([[fx, 0.14, fz], [fx, 0, fz]], 0.05, ink)
   }
   return (
     <g>
@@ -350,23 +368,43 @@ function Arm({ f, pose }: { f: Footprint; pose: RobotArmPose | undefined }) {
         const p = uv(...j)
         return <circle key={i} cx={f3(p.u)} cy={f3(p.v)} r={[0.15, 0.12, 0.08][i]} fill={tone.armJoint} {...outline} />
       })}
-      {finger(-1)}
-      {finger(1)}
-      {pose.carrying && <Workpiece c={{ x: tip[0], z: tip[2] }} y={tip[1] - WORKPIECE_HEIGHT} />}
+      <At part="gripper" x={tip[0]} y={tip[1]} z={tip[2]}>
+        {finger(-1)}
+        {finger(1)}
+        {pose.carrying && <Workpiece c={ORIGIN} y={-WORKPIECE_HEIGHT} />}
+      </At>
     </g>
   )
 }
 
 const robotArm: Drawer = (pe, s) => <Arm f={pe.equipment.footprint} pose={s?.kind === 'robot-arm' ? s.pose : undefined} />
 
-/** 設備外觀高度（公尺）：排序時估算畫面範圍用，與 3D 尺寸一致 */
+/** 帶 variant 的設備種類（依 variant 分派外觀） */
+type VariantKind = 'machine' | 'storage'
+/** 2D 設備註冊表的鍵：其餘 kind 直接當鍵（新增 kind 會自動進入此聯集），機台與倉儲依 variant */
+type ShapeKey = Exclude<EquipmentKind, VariantKind> | EquipmentVariant
+
+/**
+ * 2D 設備註冊表：每個鍵一個繪製函數與外觀高度（公尺，排序時估算畫面範圍用，與 3D 尺寸一致）。
+ * mapped type 保證新增 kind／variant 時編譯期就會要求補上，不會靜默落到某個預設外觀。
+ */
+const SHAPES: { [K in ShapeKey]: { draw: Drawer; top: number } } = {
+  conveyor: { draw: conveyor, top: BELT_TOP + WORKPIECE_HEIGHT },
+  'robot-arm': { draw: robotArm, top: ARM.shoulderHeight + ARM.upperArm + ARM.forearm },
+  cnc: { draw: cnc, top: CNC_HEIGHT + 0.5 },
+  inspection: { draw: inspection, top: INSPECTION_TOP + 0.6 },
+  rack: { draw: rack, top: RACK_TOP + 0.45 },
+  pallet: { draw: pallet, top: PALLET_TOP + 2 * WORKPIECE_HEIGHT },
+}
+
+function shapeOf(pe: PlacedEquipment): { draw: Drawer; top: number } {
+  if (pe.kind !== 'machine' && pe.kind !== 'storage') return SHAPES[pe.kind]
+  if (!pe.variant) throw new Error(`${pe.equipment.id}：${pe.kind} 缺少 variant`)
+  return SHAPES[pe.variant]
+}
+
 export function equipmentTop(pe: PlacedEquipment): number {
-  if (pe.kind === 'conveyor') return BELT_TOP + WORKPIECE_HEIGHT
-  if (pe.kind === 'robot-arm') return ARM.shoulderHeight + ARM.upperArm + ARM.forearm
-  if (pe.variant === 'cnc') return CNC_HEIGHT + 0.5
-  if (pe.variant === 'inspection') return INSPECTION_TOP + 0.6
-  if (pe.variant === 'rack') return RACK_TOP + 0.45
-  return PALLET_TOP + 2 * WORKPIECE_HEIGHT
+  return shapeOf(pe).top
 }
 
 /** 同一位置重疊時的繪製順序（例如檢測站門架跨在輸送帶上，要後畫） */
@@ -375,17 +413,5 @@ export function equipmentLayer(pe: PlacedEquipment): number {
 }
 
 export function EquipmentShape({ pe, state }: { pe: PlacedEquipment; state: EquipmentState | undefined }) {
-  const draw: Drawer =
-    pe.kind === 'conveyor'
-      ? conveyor
-      : pe.kind === 'robot-arm'
-        ? robotArm
-        : pe.variant === 'cnc'
-          ? cnc
-          : pe.variant === 'inspection'
-            ? inspection
-            : pe.variant === 'rack'
-              ? rack
-              : pallet
-  return draw(pe, state)
+  return shapeOf(pe).draw(pe, state)
 }

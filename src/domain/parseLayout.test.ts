@@ -156,7 +156,7 @@ describe('第二輪規則：可達範圍、參數名稱、移動體路線、島�
     if (r.ok) return
     const e = r.errors.find((x) => x.code === 'UNREACHABLE')
     expect(e?.equipmentId).toBe('ARM-FAR')
-    expect(e?.message).toContain('取料點')
+    expect(e?.message).toMatch(/取料點超出/)
   })
 
   it('@S3 取料點貼近底座（關節需超出限制）→ UNREACHABLE', () => {
@@ -199,5 +199,17 @@ describe('第二輪規則：可達範圍、參數名稱、移動體路線、島�
     ['平台大於陸地', env({ plateauRadius: 130 })],
   ])('環境設定%s → INVALID_SHAPE', (_l, e) => {
     expect(codes({ ...siteWith(), environment: e })).toContainEqual(expect.objectContaining({ code: 'INVALID_SHAPE' }))
+  })
+
+  it('actors 不是陣列 → INVALID_SHAPE（不得通過驗證後在執行時崩潰）', () => {
+    for (const bad of [{}, 'x', 5]) expect(codes({ ...siteWith(), actors: bad })).toContainEqual(expect.objectContaining({ code: 'INVALID_SHAPE' }))
+  })
+
+  it('路線總長為 0 → INVALID_SHAPE', () => {
+    expect(codes({ ...siteWith(), actors: [actor({ route: [{ x: 1, z: 1 }, { x: 1, z: 1 }] })] })).toContainEqual({ code: 'INVALID_SHAPE', equipmentId: 'W1' })
+  })
+
+  it('@S6 平台大於「海岸起伏後的最小陸地」→ INVALID_SHAPE（名目半徑看似足夠）', () => {
+    expect(codes({ ...siteWith(), environment: env({ radius: 200, beachWidth: 5, plateauRadius: 180 }) })).toContainEqual(expect.objectContaining({ code: 'INVALID_SHAPE' }))
   })
 })

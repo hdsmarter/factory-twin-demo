@@ -83,4 +83,15 @@ describe('actorPose', () => {
     expect(speeds.size).toBe(1)
     expect([...speeds][0]! / 1e9).toBeCloseTo(20 / (30 - 5), 9) // 路線長 20 m，可行進時間 25 s
   })
+
+  it('停留中的朝向沿用下一段有長度的路段（不因零長度段突然轉向）', () => {
+    const a: Actor = { id: 'Z', name: 'z', type: 'agv', cycleSeconds: 10, route: [{ x: 0, z: 0, dwell: 2 }, { x: 0, z: 5 }, { x: 0, z: 5 }] }
+    const p = actorPose(a, 0.5)
+    expect(p.action).toBe('dock')
+    expect(Number.isFinite(p.x) && Number.isFinite(p.z)).toBe(true)
+    for (let i = 0; i < 100; i++) {
+      const q = actorPose(a, (i / 100) * 10)
+      expect(Number.isFinite(q.x) && Number.isFinite(q.z) && Number.isFinite(q.heading), `t=${i / 10}`).toBe(true)
+    }
+  })
 })

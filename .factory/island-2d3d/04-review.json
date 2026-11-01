@@ -1,0 +1,286 @@
+{
+  "reviewers": [
+    {
+      "id": "A",
+      "lens": "正確性／測試品質",
+      "agent": "factory-reviewer（獨立 context）"
+    },
+    {
+      "id": "B",
+      "lens": "設計原則＋UX/a11y",
+      "agent": "factory-reviewer（獨立 context）"
+    }
+  ],
+  "findings": [
+    {
+      "id": "C1",
+      "severity": "P1",
+      "principle": "T3",
+      "file": "src/view2d/IsoScene.test.ts",
+      "line": 39,
+      "summary": "S8 只比 data-u/v（與繪製圖元各自計算），拿實作驗實作",
+      "status": "fixed",
+      "note": "T12：人員/AGV/夾爪/輸送帶料件以 data-part 圖元的實際 translate 比對 domain 獨立計算的投影；四種突變皆會紅，已還原。"
+    },
+    {
+      "id": "C2",
+      "severity": "P1",
+      "principle": "B1",
+      "file": "src/domain/parseLayout.ts",
+      "line": 130,
+      "summary": "actors 非陣列通過驗證後執行時崩潰",
+      "status": "fixed",
+      "note": "T11：actors 非陣列 → INVALID_SHAPE；測試涵蓋 {}、字串、數字。"
+    },
+    {
+      "id": "C3",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/domain/actors.ts",
+      "line": 35,
+      "summary": "路線總長 0 → NaN 位置",
+      "status": "fixed",
+      "note": "T11：parseLayout 拒絕總長 0；actorPose 零長度段回歸測試（全時段有限值）。"
+    },
+    {
+      "id": "C4",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/domain/motion/robotArm.ts",
+      "line": 163,
+      "summary": "只檢查 5 個路徑點，途中可能超出關節限制",
+      "status": "fixed",
+      "note": "T11：沿 SCRIPT 每段取樣 24 點檢查；以審查者反例測試（並以實際姿態對照確認會超限）。"
+    },
+    {
+      "id": "C5",
+      "severity": "P2",
+      "principle": "T3",
+      "file": "src/domain/parseLayout.test.ts",
+      "line": 162,
+      "summary": "關節限制分支無測試、點位斷言過寬",
+      "status": "fixed",
+      "note": "T11：途中超限測試；點位改比對完整前綴（/^取料點超出/、/^放料點太靠近/）。"
+    },
+    {
+      "id": "C6",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/domain/parseLayout.ts",
+      "line": 66,
+      "summary": "島嶼驗證未考慮海岸起伏",
+      "status": "fixed",
+      "note": "T11：以 radius×(1-COAST_WOBBLE)-beachWidth 驗證；邊界測試。"
+    },
+    {
+      "id": "C7",
+      "severity": "P2",
+      "principle": "T3",
+      "file": "src/scene/island/Ocean.tsx",
+      "line": 47,
+      "summary": "3D 海面 time 非週期，S7 只保護 domain/2D",
+      "status": "open",
+      "note": "刻意選擇：Water 噪聲以 wavePhase 取模會每 6 秒跳格。階段 5 循環影片時再以 scenePeriod 處理接縫並補 Scenario。"
+    },
+    {
+      "id": "C8",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/App.tsx",
+      "line": 75,
+      "summary": "2D 每次切入從 t=0 起算，與 3D 不連續",
+      "status": "fixed",
+      "note": "T13：App 單一 SimTimeline，3D/2D/探針共用；E2E 驗證切換時 t 連續。"
+    },
+    {
+      "id": "C9",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/App.tsx",
+      "line": 82,
+      "summary": "3D 期間改視窗尺寸後切 2D 尺寸錯",
+      "status": "fixed",
+      "note": "T13：進入 2D 時同步尺寸；E2E 驗證 1280 寬。"
+    },
+    {
+      "id": "C10",
+      "severity": "P2",
+      "principle": "T3",
+      "file": "e2e/island.spec.ts",
+      "line": 59,
+      "summary": "S9 未驗網格>0、未驗切回 3D 仍在渲染",
+      "status": "fixed",
+      "note": "T13：只收網格>0 的 id；切回後幀數需增加且集合相同。"
+    },
+    {
+      "id": "C11",
+      "severity": "P3",
+      "principle": "T3",
+      "file": "src/scene/Probe.tsx",
+      "line": 34,
+      "summary": "屋頂可見只看群組不看網格",
+      "status": "fixed",
+      "note": "T13：需群組可見且底下可見網格>0。"
+    },
+    {
+      "id": "C12",
+      "severity": "P3",
+      "principle": "T3",
+      "file": "src/scene/Probe.tsx",
+      "line": 49,
+      "summary": "人物 GLB 非同步載入可能假紅",
+      "status": "fixed",
+      "note": "T13：E2E 以 poll 等到所有人員/AGV 網格>0。"
+    },
+    {
+      "id": "C13",
+      "severity": "P3",
+      "principle": "D1",
+      "file": "src/view2d/IsoScene.tsx",
+      "line": 37,
+      "summary": "AGV 尺寸 2D/3D 不一致",
+      "status": "fixed",
+      "note": "T11–T13：AGV_DIMENSIONS、WORKER_HEIGHT 移入 domain/specs，2D 與 3D 共用。"
+    },
+    {
+      "id": "C14",
+      "severity": "P3",
+      "principle": "B1",
+      "file": "src/domain/simulate.ts",
+      "line": 60,
+      "summary": "scenePeriod 以毫秒取整與極大 LCM",
+      "status": "open",
+      "note": "目前配置週期皆為整數秒；需要時於 parseLayout 限制週期粒度。"
+    },
+    {
+      "id": "C15",
+      "severity": "P3",
+      "principle": "B1",
+      "file": "src/domain/environment.ts",
+      "line": 119,
+      "summary": "forestPlacement 可能回傳少於 count",
+      "status": "open",
+      "note": "目前配置實得 90/90；小島情境再加檢查。"
+    },
+    {
+      "id": "C16",
+      "severity": "P3",
+      "principle": "B1",
+      "file": "scripts/assets/fetch.mjs",
+      "line": 44,
+      "summary": "url 變更後仍用舊快取",
+      "status": "open",
+      "note": "清冊尚無版本變更需求；下次調整角色來源時改為依 url 雜湊快取。"
+    },
+    {
+      "id": "D1",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/view2d/shapes.tsx",
+      "line": 159,
+      "summary": "設備外觀尺寸 2D/3D 各寫一份",
+      "status": "open",
+      "note": "部分處理（AGV、人員已共用）；設備尺寸統一移入 specs 排入下一輪。"
+    },
+    {
+      "id": "D2",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/view2d/IsoScene.tsx",
+      "line": 37,
+      "summary": "AGV/人員尺寸不一致",
+      "status": "fixed",
+      "note": "同 C13。"
+    },
+    {
+      "id": "D3",
+      "severity": "P2",
+      "principle": "DD1",
+      "file": "src/theme/actorTokens.ts",
+      "line": 34,
+      "summary": "AGV 載貨是 token 中的業務資料，2D 不畫",
+      "status": "open",
+      "note": "下一輪將 carrying 移入 domain（Waypoint load/unload），2D/3D 共讀。"
+    },
+    {
+      "id": "D4",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/view2d/shapes.tsx",
+      "line": 319,
+      "summary": "2D 手臂自寫連桿鏈",
+      "status": "open",
+      "note": "下一輪 domain 匯出 armJoints()，2D/3D 共用。"
+    },
+    {
+      "id": "D5",
+      "severity": "P2",
+      "principle": "S3",
+      "file": "src/view2d/shapes.tsx",
+      "line": 377,
+      "summary": "2D 設備/人員分派無型別保護",
+      "status": "fixed",
+      "note": "T12：SHAPES 與 ACTOR_VIEWS 改為 mapped type 註冊表，移除靜默預設。"
+    },
+    {
+      "id": "D6",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/App.tsx",
+      "line": 75,
+      "summary": "2D 另開時間來源",
+      "status": "fixed",
+      "note": "同 C8。"
+    },
+    {
+      "id": "D7",
+      "severity": "P2",
+      "principle": "D1",
+      "file": "src/scene/effects/LightBeams.tsx",
+      "line": 9,
+      "summary": "天窗/牆幾何散落 4 處",
+      "status": "open",
+      "note": "下一輪新增 domain buildingLayout(site)。"
+    },
+    {
+      "id": "D8",
+      "severity": "P3",
+      "principle": "D1",
+      "file": "src/view2d/palette.ts",
+      "line": 49,
+      "summary": "語意色 2D/3D 各寫一份",
+      "status": "open",
+      "note": "下一輪建立共用 semantic token。"
+    },
+    {
+      "id": "D9",
+      "severity": "P3",
+      "principle": "UX-a11y",
+      "file": "src/App.tsx",
+      "line": 52,
+      "summary": "未處理 prefers-reduced-motion、無暫停",
+      "status": "open",
+      "note": "階段 5 加入播放/暫停（凍結時鐘）與 reduced-motion。"
+    },
+    {
+      "id": "D10",
+      "severity": "P3",
+      "principle": "UX-a11y",
+      "file": "src/view2d/IsoScene.tsx",
+      "line": 329,
+      "summary": "巢狀 role=img 無名稱",
+      "status": "fixed",
+      "note": "T12：內層 svg aria-hidden，外層 div 提供 role=img 與 i18n aria-label。"
+    },
+    {
+      "id": "D11",
+      "severity": "P3",
+      "principle": "K3",
+      "file": "src/scene/clock.tsx",
+      "line": 9,
+      "summary": "逐格錄影就緒度",
+      "status": "open",
+      "note": "SimTimeline 已就緒；frameloop/advance、鏡頭腳本、關閉阻尼排入階段 5。"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "task": "T12",
+  "phase": "red",
+  "at": "2026-11-02T01:19:15+08:00",
+  "command": "npx vitest run src/view2d",
+  "exit_code": 1,
+  "fingerprint": "5adeaa7+af302f232621",
+  "output_tail": "- Expected\n+ Received\n\n- 4\n+ 0\n\n ❯ src/view2d/IsoScene.test.ts:135:38\n    133|           .sort(byUV)\n    134|         const got = parts(svg, pe.equipment.id, 'conveyor-item').sort(…\n    135|         expect(got, pe.equipment.id).toHaveLength(want.length)\n       |                                      ^\n    136|         want.forEach((w, i) => near(got[i]!, w, `${pe.equipment.id}#${…\n    137|       }\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯\n\n FAIL  src/view2d/IsoScene.test.ts > IsoScene > a11y：內層 svg aria-hidden（role/aria-label 由外層容器提供）\nAssertionError: expected '<svg data-view=\"iso2d\" xmlns=\"http://…' to match /\\baria-hidden=\"true\"/\n\n- Expected:\n/\\baria-hidden=\"true\"/\n\n+ Received:\n\"<svg data-view=\\\"iso2d\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"-184.36798826357085 -102.39356093173402 374.2675490775527 210.5254963561234\\\" width=\\\"1600\\\" height=\\\"900\\\" role=\\\"img\\\">\"\n\n ❯ src/view2d/IsoScene.test.ts:143:18\n    141|   it('a11y：內層 svg aria-hidden（role/aria-label 由外層容器提供）', () => {\n    142|     const open = render(T).match(/^<svg\\b[^>]*>/)?.[0] ?? ''\n    143|     expect(open).toMatch(/\\baria-hidden=\"true\"/)\n       |                  ^\n    144|     expect(open).not.toMatch(/\\brole=/)\n    145|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯\n\n\n Test Files  1 failed (1)\n      Tests  13 failed | 5 passed (18)\n   Start at  01:19:16\n   Duration  944ms (tests 53%, transform 28%, import 19%)"
+}

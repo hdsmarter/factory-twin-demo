@@ -2,13 +2,13 @@ import { useMemo, type ReactNode } from 'react'
 import type { ActorPose } from '../domain/actors'
 import { forestPlacement, islandHeight, PLATEAU_HEIGHT } from '../domain/environment'
 import { areaBounds, footprintRect, type Rect } from '../domain/geometry'
-import type { Actor, IslandSpec, PlacedEquipment, Site } from '../domain/layout'
+import type { Actor, ActorType, IslandSpec, PlacedEquipment, Site } from '../domain/layout'
 import { ISO_DIRECTION, isoProject } from '../domain/projection'
 import type { FrameState } from '../domain/simulate'
-import { FOREST_COUNT } from '../domain/specs'
+import { AGV_DIMENSIONS, FOREST_COUNT, WORKER_HEIGHT } from '../domain/specs'
 import { agv as agvTone, building as bt, land, sea } from './palette'
-import { PeepFigure, PERSON_HEIGHT } from './Peep'
-import { EquipmentShape, equipmentLayer, equipmentTop, Flat, orientedRect, outline, Prism, pt, Tree, type XZ } from './shapes'
+import { PeepFigure } from './Peep'
+import { At, EquipmentShape, equipmentLayer, equipmentTop, Flat, orientedRect, outline, Prism, pt, Tree, type XZ } from './shapes'
 
 export interface IsoSceneProps {
   site: Site
@@ -34,7 +34,11 @@ const COLUMN_SPACING = 6
 const APRON_MARGIN = 3
 /** 遠景時人物／AGV 外觀放大倍率（錨點不變） */
 const ENLARGE = { island: 3, factory: 1.25 } as const
-const AGV_SIZE = { length: 1.1, width: 0.75, deck: 0.08, top: 0.32 }
+/** AGV 插畫：底盤色帶佔總高的比例、狀態燈半徑（公尺）與自中心往前的位置（佔車長比例） */
+const AGV_DECK_RATIO = 0.2
+const AGV_LAMP = { r: 0.09, forward: 0.3 }
+/** 人員佔地半徑（公尺，排序用） */
+const WORKER_RADIUS = 0.3
 
 type V3 = [number, number, number]
 type Box = { u0: number; u1: number; v0: number; v1: number }
@@ -218,20 +222,28 @@ function Shell({ site, placed }: { site: Site; placed: PlacedEquipment[] }) {
   )
 }
 
+/** AGV：以底面中心為原點繪製，再平移到 pose (x, 0, z) 的投影（data-part="agv" 的 translate 即錨點）。 */
 function Agv({ pose, enlarge }: { pose: ActorPose; enlarge: number }) {
-  const L = AGV_SIZE.length * enlarge
-  const Wd = AGV_SIZE.width * enlarge
-  const base = orientedRect(pose, pose.heading, L, Wd)
-  const lamp = { x: pose.x + Math.cos(pose.heading) * L * 0.3, z: pose.z - Math.sin(pose.heading) * L * 0.3 }
-  const lampAt = isoProject(lamp.x, AGV_SIZE.top * enlarge, lamp.z)
+  const L = AGV_DIMENSIONS.length * enlarge
+  const Wd = AGV_DIMENSIONS.width * enlarge
+  const top = AGV_DIMENSIONS.height * enlarge
+  const deck = top * AGV_DECK_RATIO
+  const base = orientedRect({ x: 0, z: 0 }, pose.heading, L, Wd)
+  const lampAt = isoProject(Math.cos(pose.heading) * L * AGV_LAMP.forward, top, -Math.sin(pose.heading) * L * AGV_LAMP.forward)
   const deckTone = { top: agvTone.deck, left: agvTone.deck, right: agvTone.deck }
   return (
-    <g>
-      <Prism base={base} y0={0} y1={AGV_SIZE.deck * enlarge} tone={deckTone} />
-      <Prism base={base} y0={AGV_SIZE.deck * enlarge} y1={AGV_SIZE.top * enlarge} tone={agvTone.body} />
-      <circle cx={lampAt.u} cy={lampAt.v} r={0.09 * enlarge} fill={pose.action === 'move' ? agvTone.lightMove : agvTone.lightDock} {...outline} />
-    </g>
+    <At part="agv" x={pose.x} y={0} z={pose.z}>
+      <Prism base={base} y0={0} y1={deck} tone={deckTone} />
+      <Prism base={base} y0={deck} y1={top} tone={agvTone.body} />
+      <circle cx={lampAt.u} cy={lampAt.v} r={AGV_LAMP.r * enlarge} fill={pose.action === 'move' ? agvTone.lightMove : agvTone.lightDock} {...outline} />
+    </At>
   )
+}
+
+/** 2D 移動體註冊表：mapped type 保證每種 ActorType 都有外觀，不會靜默退回 AGV。 */
+const ACTOR_VIEWS: { [K in ActorType]: { radius: number; height: number; draw: (pose: ActorPose, look: number, enlarge: number) => ReactNode } } = {
+  worker: { radius: WORKER_RADIUS, height: WORKER_HEIGHT, draw: (pose, look, enlarge) => <PeepFigure pose={pose} look={look} enlarge={enlarge} /> },
+  agv: { radius: AGV_DIMENSIONS.length / 2, height: AGV_DIMENSIONS.height, draw: (pose, _look, enlarge) => <Agv pose={pose} enlarge={enlarge} /> },
 }
 
 const withPoint = (r: Rect, p: XZ): Rect => ({ minX: Math.min(r.minX, p.x), maxX: Math.max(r.maxX, p.x), minZ: Math.min(r.minZ, p.z), maxZ: Math.max(r.maxZ, p.z) })
@@ -301,17 +313,17 @@ export function IsoScene({ site, placed, actors, state, width, height, framing =
     ...actors.flatMap((a, i) => {
       const pose = state.actors[a.id]
       if (!pose) return []
-      const worker = a.type === 'worker'
+      const view = ACTOR_VIEWS[a.type]
       return [
         {
           key: a.id,
-          rect: pointRect(pose, (worker ? 0.3 : AGV_SIZE.length / 2) * enlarge),
+          rect: pointRect(pose, view.radius * enlarge),
           y0: 0,
-          y1: (worker ? PERSON_HEIGHT : AGV_SIZE.top) * enlarge,
+          y1: view.height * enlarge,
           layer: 3,
           node: (
             <Entity key={a.id} id={a.id} at={pose}>
-              {worker ? <PeepFigure pose={pose} look={i} enlarge={enlarge} /> : <Agv pose={pose} enlarge={enlarge} />}
+              {view.draw(pose, i, enlarge)}
             </Entity>
           ),
         },
@@ -326,7 +338,7 @@ export function IsoScene({ site, placed, actors, state, width, height, framing =
       viewBox={`${box.u0} ${box.v0} ${box.u1 - box.u0} ${box.v1 - box.v0}`}
       width={width}
       height={height}
-      role="img"
+      aria-hidden="true"
     >
       <Sea box={box} wave={wave} />
       {shape && <Island shape={shape} />}

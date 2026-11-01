@@ -1,6 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useRef } from 'react'
 import type * as THREE from 'three'
+import { useSimTimeline } from './clock'
 
 /** 某個子樹底下「可見且實際有幾何」的數量（Mesh、SkinnedMesh、InstancedMesh、Points；父層或自身 visible=false 的不算） */
 function visibleDrawables(root: THREE.Object3D): number {
@@ -18,11 +19,15 @@ export interface ProbeSnapshot {
   buildingMeshes: number
   roofVisible: boolean
   frontWallVisible: boolean
+  /** 目前模擬時間（秒） */
+  t: number
+  /** 探針掛載後經過的渲染幀數（判斷畫面是否仍在渲染） */
+  frame: number
 }
 
 /** 掃描整個場景，依 userData 標記統計（契約見 e2e/island.spec.ts） */
-function snapshot(scene: THREE.Scene): ProbeSnapshot {
-  const s: ProbeSnapshot = { equipmentMeshes: {}, actorMeshes: {}, envParts: {}, buildingMeshes: 0, roofVisible: false, frontWallVisible: false }
+function snapshot(scene: THREE.Scene, t: number, frame: number): ProbeSnapshot {
+  const s: ProbeSnapshot = { equipmentMeshes: {}, actorMeshes: {}, envParts: {}, buildingMeshes: 0, roofVisible: false, frontWallVisible: false, t, frame }
   scene.traverse((o) => {
     const u = o.userData
     if (typeof u.equipmentId === 'string') s.equipmentMeshes[u.equipmentId] = visibleDrawables(o)
@@ -30,9 +35,10 @@ function snapshot(scene: THREE.Scene): ProbeSnapshot {
     if (typeof u.envPart === 'string') s.envParts[u.envPart] = (s.envParts[u.envPart] ?? 0) + visibleDrawables(o)
     if (u.building === true) s.buildingMeshes += visibleDrawables(o)
   })
+  // 外殼可見 = 標記群組本身可見，且底下確實有可見網格
   scene.traverseVisible((o) => {
-    if (o.userData.shellPart === 'roof') s.roofVisible = true
-    if (o.userData.shellPart === 'front') s.frontWallVisible = true
+    if (o.userData.shellPart === 'roof' && visibleDrawables(o) > 0) s.roofVisible = true
+    if (o.userData.shellPart === 'front' && visibleDrawables(o) > 0) s.frontWallVisible = true
   })
   return s
 }
@@ -43,11 +49,13 @@ function snapshot(scene: THREE.Scene): ProbeSnapshot {
  */
 export function Probe() {
   const scene = useThree((s) => s.scene)
+  const timeline = useSimTimeline()
   const frames = useRef(0)
   useFrame(() => {
     frames.current += 1
     if (frames.current !== 2) return
-    ;(window as unknown as { __factory: unknown }).__factory = { ready: true, ...snapshot(scene), snapshot: () => snapshot(scene) }
+    const take = () => snapshot(scene, timeline.now(), frames.current)
+    ;(window as unknown as { __factory: unknown }).__factory = { ready: true, ...take(), snapshot: take }
   })
   return null
 }

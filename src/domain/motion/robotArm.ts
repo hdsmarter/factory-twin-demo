@@ -172,8 +172,25 @@ export function armReachProblem(p: RobotArmParams): string | null {
       if (q[j] < min || q[j] > max) return `${WAYPOINT_LABEL[name]}需要的 ${j} 關節角度超出限制`
     }
   }
+  // 路徑點之間以柱座標插值移動，途中可能穿過肩部附近的禁區 → 沿每段取樣檢查
+  for (let i = 1; i < SCRIPT.length; i++) {
+    const a = SCRIPT[i - 1]![1]
+    const b = SCRIPT[i]![1]
+    for (let k = 1; k < TRANSIT_SAMPLES; k++) {
+      const c = interpolate(w[a], w[b], k / TRANSIT_SAMPLES)
+      const d = Math.hypot(c.r, c.y + p.tool - p.shoulderHeight)
+      const q = solve(p, c)
+      const outOfLimit = (['shoulder', 'elbow', 'wrist'] as const).some((j) => q[j] < JOINT_LIMITS[j][0] || q[j] > JOINT_LIMITS[j][1])
+      if (d > p.upperArm + p.forearm - 1e-6 || d < Math.abs(p.upperArm - p.forearm) + 1e-6 || outOfLimit) {
+        return `${WAYPOINT_LABEL[a]}→${WAYPOINT_LABEL[b]} 移動途中關節角度超出限制`
+      }
+    }
+  }
   return null
 }
+
+/** 路徑段取樣數（可達性驗證用） */
+const TRANSIT_SAMPLES = 24
 
 /** 由配置中的設備（佔地 + 取放偏移參數）建立手臂參數；驗證與模擬共用。 */
 export function armParamsOf(

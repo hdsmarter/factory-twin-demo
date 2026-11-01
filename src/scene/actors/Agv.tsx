@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
+import { AGV_DIMENSIONS } from '../../domain/specs'
 import { agv } from '../../theme/actorTokens'
 import { useFrameRef } from '../Factory'
 import type { ActorViewProps } from './index'
@@ -12,8 +13,10 @@ const WHEEL_INSET = agv.wheelRadius * 2
 export function Agv({ actor }: ActorViewProps) {
   const frame = useFrameRef()
   const root = useRef<THREE.Group>(null)
-  const { length, width, height } = agv
-  const top = CLEARANCE + height
+  // 外形尺寸來自 domain（與 2D 共用）；總高 = 離地間隙 + 機身
+  const { length, width } = AGV_DIMENSIONS
+  const height = AGV_DIMENSIONS.height - CLEARANCE
+  const top = AGV_DIMENSIONS.height
 
   const mats = useMemo(
     () => ({

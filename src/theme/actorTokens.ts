@@ -2,8 +2,6 @@
 
 export const worker = {
   model: 'worker_human',
-  /** 等比縮放後的身高（公尺） */
-  height: 1.75,
   /** 模型預設面向 +z；rotation.y = heading + yawOffset 讓前進方向 = (cos h, 0, -sin h) */
   yawOffset: Math.PI / 2,
   clips: { walk: 'Human Armature|Walk', work: 'Human Armature|Working', idle: 'Human Armature|Idle' },
@@ -21,9 +19,7 @@ export const worker = {
 } as const
 
 export const agv = {
-  length: 1.2,
-  width: 0.8,
-  height: 0.35,
+  /** 外形尺寸見 domain/specs.ts 的 AGV_DIMENSIONS（2D/3D 共用）；這裡只放細部外觀 */
   wheelRadius: 0.08,
   wheelWidth: 0.05,
   scannerRadius: 0.06,

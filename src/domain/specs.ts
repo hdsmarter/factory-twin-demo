@@ -7,5 +7,11 @@ export const WORKPIECE_HEIGHT = 0.14
 export const PALLET_TOP = 0.15
 export const DEFAULT_CONVEYOR_ITEMS = 4
 
+/** AGV 外形（公尺）：3D 模型與 2D 插畫共用 */
+export const AGV_DIMENSIONS = { length: 1.2, width: 0.8, height: 0.39 } as const
+
+/** 工作人員身高（公尺）：3D 模型縮放與 2D 人物共用 */
+export const WORKER_HEIGHT = 1.75
+
 /** 島嶼森林的樹木數量（3D 森林與 2D 插畫共用） */
 export const FOREST_COUNT = 90

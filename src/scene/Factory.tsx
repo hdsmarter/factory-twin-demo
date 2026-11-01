@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { createContext, useContext, useRef, type MutableRefObject, type ReactNode } from 'react'
 import type { PlacedEquipment, Site } from '../domain/layout'
 import { simulate, type EquipmentState, type FrameState } from '../domain/simulate'
-import { useSimClock } from './clock'
+import { useSimTimeline } from './clock'
 import { equipmentViews } from './equipment/registry'
 
 const DEG = Math.PI / 180
@@ -35,11 +35,11 @@ export function useEquipmentState<K extends EquipmentState['kind']>(id: string, 
 
 /** 模擬驅動者：每幀算一次 simulate()，並把時間與狀態提供給設備與 children（人員、環境、效果）。 */
 export function Factory({ site, placed, children }: { site: Site; placed: PlacedEquipment[]; children?: ReactNode }) {
-  const clock = useSimClock()
-  const t0 = clock.now(0)
+  const timeline = useSimTimeline()
+  const t0 = timeline.now()
   const frame = useRef<FrameRef>({ t: t0, state: simulate(site, placed, t0) })
-  useFrame((state) => {
-    const t = clock.now(state.clock.elapsedTime)
+  useFrame(() => {
+    const t = timeline.now()
     frame.current = { t, state: simulate(site, placed, t) }
   }, SIMULATION_PRIORITY)
 

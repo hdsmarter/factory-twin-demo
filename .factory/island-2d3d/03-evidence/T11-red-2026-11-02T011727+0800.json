@@ -1,0 +1,9 @@
+{
+  "task": "T11",
+  "phase": "red",
+  "at": "2026-11-02T01:17:27+08:00",
+  "command": "npx vitest run src/domain",
+  "exit_code": 1,
+  "fingerprint": "5adeaa7+fc0ce8185d18",
+  "output_tail": "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯\n\n FAIL  src/domain/parseLayout.test.ts > 第二輪規則：可達範圍、參數名稱、移動體路線、島嶼 > @S6 平台大於「海岸起伏後的最小陸地」→ INVALID_SHAPE（名目半徑看似足夠）\nAssertionError: expected [] to deep equally contain ObjectContaining{…}\n\n- Expected:\nObjectContaining {\n  \"code\": \"INVALID_SHAPE\",\n}\n\n+ Received:\n[]\n\n ❯ src/domain/parseLayout.test.ts:213:108\n    211|\n    212|   it('@S6 平台大於「海岸起伏後的最小陸地」→ INVALID_SHAPE（名目半徑看似足夠）', () => {\n    213|     expect(codes({ ...siteWith(), environment: env({ radius: 200, beac…\n       |                                                                                                            ^\n    214|   })\n    215| })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯\n\n FAIL  src/domain/motion/robotArm.test.ts > armReachProblem > @S3 五個路徑點都可達、但移動途中肘關節會超出限制 → 回報途中問題\nTypeError: .toMatch() expects to receive a string, but got object\n ❯ src/domain/motion/robotArm.test.ts:83:21\n     81|     const q = { ...p, pick: { x: 0.3, y: 0, z: 0 }, place: { x: -0.3, …\n     82|     const problem = armReachProblem(q)\n     83|     expect(problem).toMatch(/途中/)\n       |                     ^\n     84|     // 對照：實際姿態確實會超出限制（證明這不是誤報）\n     85|     const N = 600\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯\n\n\n Test Files  2 failed | 9 passed (11)\n      Tests  4 failed | 82 passed (86)\n   Start at  01:17:29\n   Duration  623ms (transform 53%, import 24%, tests 16%, worker 7%)"
+}

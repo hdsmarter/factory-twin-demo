@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Suspense, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js'
+import { WORKER_HEIGHT } from '../../domain/specs'
 import { worker } from '../../theme/actorTokens'
 import { ErrorBoundary } from '../ErrorBoundary'
 import { useFrameRef } from '../Factory'
@@ -91,7 +92,7 @@ function useWorkerRig(outfit: string) {
     body.position.y = -box.min.y
     const rig = new THREE.Group()
     rig.add(body)
-    rig.scale.setScalar(worker.height / Math.max(box.max.y - box.min.y, 1e-6))
+    rig.scale.setScalar(WORKER_HEIGHT / Math.max(box.max.y - box.min.y, 1e-6))
     rig.updateMatrixWorld(true)
     attachHardHat(body)
 

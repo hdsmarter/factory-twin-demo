@@ -1,0 +1,9 @@
+{
+  "task": "T13",
+  "phase": "green",
+  "at": "2026-11-02T01:21:57+08:00",
+  "command": "npx playwright test --reporter=line",
+  "exit_code": 0,
+  "fingerprint": "5adeaa7+0ac98287198f",
+  "output_tail": "Running 7 tests using 2 workers\n\n[1/7] [chromium] › e2e/s11-scene.spec.ts:41:1 › @S11 開啟展示頁看到寫實 3D 產線\n[2/7] [chromium] › e2e/island.spec.ts:37:1 › @S10 3D 呈現荒島環境與場景效果\n[3/7] [chromium] › e2e/island.spec.ts:50:1 › @S12 島嶼全景與廠內視角切換\n[4/7] [chromium] › e2e/s11-scene.spec.ts:65:1 › @S11 某個裝飾道具載入失敗時，產線設備仍完整呈現\n[5/7] [chromium] › e2e/island.spec.ts:61:1 › @S9 在 3D 與 2D 之間切換，兩者呈現相同的設備、人員與 AGV\n[6/7] [chromium] › e2e/island.spec.ts:84:1 › @S9 3D 與 2D 共用同一條時間軸：切換時時間連續\n[7/7] [chromium] › e2e/island.spec.ts:98:1 › @S9 在 3D 時改變視窗大小，再切到 2D 時插畫符合新尺寸\n  7 passed (2.7m)"
+}

@@ -8,8 +8,8 @@ export const PLATEAU_HEIGHT = 2
 const BEACH_TOP = 0.7
 /** 丘陵起伏幅度 */
 const HILL_AMPLITUDE = 7
-/** 海岸線不規則程度（相對半徑） */
-const COAST_WOBBLE = 0.08
+/** 海岸線不規則程度（相對半徑）；配置驗證據此計算最小陸地 */
+export const COAST_WOBBLE = 0.08
 const SEABED_SLOPE = 0.15
 const SEABED_MIN = -8
 

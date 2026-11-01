@@ -1,0 +1,8 @@
+{
+  "scenario": "S9",
+  "at": "2026-11-02T01:25:24+08:00",
+  "command": "npx playwright test e2e/island.spec.ts -g @S9 --reporter=line",
+  "exit_code": 0,
+  "fingerprint": "5adeaa7+0ac98287198f",
+  "output_tail": "Running 3 tests using 1 worker\n\n[1/3] [chromium] › e2e/island.spec.ts:61:1 › @S9 在 3D 與 2D 之間切換，兩者呈現相同的設備、人員與 AGV\n[2/3] [chromium] › e2e/island.spec.ts:84:1 › @S9 3D 與 2D 共用同一條時間軸：切換時時間連續\n[3/3] [chromium] › e2e/island.spec.ts:98:1 › @S9 在 3D 時改變視窗大小，再切到 2D 時插畫符合新尺寸\n  3 passed (1.3m)"
+}

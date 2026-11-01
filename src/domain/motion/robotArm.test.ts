@@ -73,7 +73,17 @@ describe('robotArmPose', () => {
 describe('armReachProblem', () => {
   it('@S3 可達的取放點 → null；太遠或太近 → 說明哪個點位', () => {
     expect(armReachProblem(p)).toBeNull()
-    expect(armReachProblem({ ...p, pick: { x: 3.5, y: 0.95, z: 0 } })).toContain('取料點')
-    expect(armReachProblem({ ...p, place: { x: 0.03, y: 0.5, z: 0 } })).toContain('放料點')
+    expect(armReachProblem({ ...p, pick: { x: 3.5, y: 0.95, z: 0 } })).toMatch(/^取料點超出/)
+    expect(armReachProblem({ ...p, place: { x: 0.03, y: 0.5, z: 0 } })).toMatch(/^放料點太靠近/)
+  })
+
+  it('@S3 五個路徑點都可達、但移動途中肘關節會超出限制 → 回報途中問題', () => {
+    const q = { ...p, pick: { x: 0.3, y: 0, z: 0 }, place: { x: -0.3, y: 0.9, z: 0 } }
+    const problem = armReachProblem(q)
+    expect(problem).toMatch(/途中/)
+    // 對照：實際姿態確實會超出限制（證明這不是誤報）
+    const N = 600
+    const exceeds = Array.from({ length: N }, (_, i) => robotArmPose(q, (i / N) * q.cycleSeconds)).some((s) => s.elbow < JOINT_LIMITS.elbow[0] || s.elbow > JOINT_LIMITS.elbow[1])
+    expect(exceeds).toBe(true)
   })
 })

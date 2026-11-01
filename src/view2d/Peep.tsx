@@ -9,6 +9,7 @@ import { WalkingBW } from 'react-peeps/lib/peeps/pose/standing/WalkingBW.js'
 import { WalkingFilled } from 'react-peeps/lib/peeps/pose/standing/WalkingFilled.js'
 import { WalkingWB } from 'react-peeps/lib/peeps/pose/standing/WalkingWB.js'
 import type { ActorPose } from '../domain/actors'
+import { WORKER_HEIGHT } from '../domain/specs'
 import { ink, people } from './palette'
 import { ELLIPSE, uv, VERTICAL } from './shapes'
 
@@ -22,8 +23,6 @@ const HEAD = { x: 225, y: 0 }
 const FACE = { x: 159, y: 186 }
 const FOOT = { x: 440, y: 2910 }
 const ART_HEIGHT = 2850
-/** 人物身高（公尺） */
-export const PERSON_HEIGHT = 1.75
 
 /** 依人員序號決定外觀（決定性）；走路與工作各一組姿勢 */
 const LOOKS = [
@@ -33,19 +32,19 @@ const LOOKS = [
 ]
 
 /**
- * 腳底在 pose (x, 0, z) 的投影點；enlarge 只放大人物外觀（遠景看得見），不移動錨點。
+ * 腳底在 pose (x, 0, z) 的投影點（外層 data-part="worker" 的 translate 即錨點）；enlarge 只放大人物外觀（遠景看得見），不移動錨點。
  * 行進方向在畫面上朝左時水平鏡像。
  */
 export function PeepFigure({ pose, look, enlarge }: { pose: ActorPose; look: number; enlarge: number }) {
   const p = uv(pose.x, 0, pose.z)
   const style = LOOKS[look % LOOKS.length]!
-  const s = (PERSON_HEIGHT * VERTICAL * enlarge) / ART_HEIGHT
+  const s = (WORKER_HEIGHT * VERTICAL * enlarge) / ART_HEIGHT
   const facingLeft = uv(Math.cos(pose.heading), 0, -Math.sin(pose.heading)).u < uv(0, 0, 0).u
   const Body = pose.action === 'work' ? style.work : style.walk
   const HairPiece = style.hair
   const shadowR = 0.35 * enlarge
   return (
-    <g transform={`translate(${p.u} ${p.v})`}>
+    <g data-part="worker" transform={`translate(${p.u} ${p.v})`}>
       <ellipse cx={0} cy={0} rx={shadowR * ELLIPSE.rx} ry={shadowR * ELLIPSE.ry} fill={people.shadow} />
       <g transform={`scale(${facingLeft ? -s : s} ${s}) translate(${-FOOT.x} ${-FOOT.y})`}>
         <Body strokeColor={ink} backgroundColor={people.skin} />

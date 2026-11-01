@@ -17,7 +17,7 @@ import { Factory } from './scene/Factory'
 import { Probe, probeEnabled } from './scene/Probe'
 import { Props } from './scene/Props'
 import { Actors } from './scene/actors'
-import { SimClockProvider, clockFromUrl, type SimClock } from './scene/clock'
+import { SimTimelineProvider, clockFromUrl, createTimeline, type SimTimeline } from './scene/clock'
 import { Dust } from './scene/effects/Dust'
 import { LightBeams } from './scene/effects/LightBeams'
 import { Island } from './scene/island'
@@ -66,29 +66,33 @@ function CameraRig({ mode }: { mode: ViewMode }) {
   return null
 }
 
-/** 2D 插畫：以同一個時鐘與 simulate() 逐幀更新（只在 2D 視角時運轉） */
-function Iso2D({ site, placed, actors, clock, active }: { site: Site; placed: PlacedEquipment[]; actors: Actor[]; clock: SimClock; active: boolean }) {
-  const [t, setT] = useState(() => clock.now(0))
-  const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight })
+const viewport = () => ({ width: window.innerWidth, height: window.innerHeight })
+
+/** 2D 插畫：與 3D 共用同一條模擬時間軸，以 simulate() 逐幀更新（只在 2D 視角時運轉） */
+function Iso2D({ site, placed, actors, timeline, active }: { site: Site; placed: PlacedEquipment[]; actors: Actor[]; timeline: SimTimeline; active: boolean }) {
+  const [t, setT] = useState(() => timeline.now())
+  const [size, setSize] = useState(viewport)
   useEffect(() => {
     if (!active) return
-    const start = performance.now()
+    // 進入 2D 時先同步一次：在 3D 期間的時間推進與視窗尺寸變化都要反映
+    setT(timeline.now())
+    setSize(viewport())
     let raf = 0
     const tick = () => {
-      setT(clock.now((performance.now() - start) / 1000))
+      setT(timeline.now())
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
-    const onResize = () => setSize({ width: window.innerWidth, height: window.innerHeight })
+    const onResize = () => setSize(viewport())
     window.addEventListener('resize', onResize)
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
     }
-  }, [active, clock])
+  }, [active, timeline])
   const state = useMemo(() => simulate(site, placed, t), [site, placed, t])
   return (
-    <div role="img" aria-label={msg.iso2dLabel} style={{ width: '100%', height: '100%' }}>
+    <div role="img" aria-label={msg.iso2dLabel} data-sim-t={t} style={{ width: '100%', height: '100%' }}>
       <Suspense fallback={null}>
         <IsoScene site={site} placed={placed} actors={actors} state={state} t={t} width={size.width} height={size.height} framing="factory" />
       </Suspense>
@@ -136,7 +140,7 @@ const SUBTITLE: Record<ViewMode, string> = { island: msg.subtitleIsland, interio
 
 export function App() {
   const parsed = useMemo(() => parseLayout(layoutJson, catalog), [])
-  const clock = useMemo(() => clockFromUrl(window.location.search), [])
+  const timeline = useMemo(() => createTimeline(clockFromUrl(window.location.search)), [])
   const [mode, setMode] = useState<ViewMode>('interior')
   const [visited2d, setVisited2d] = useState(false)
   useEffect(() => {
@@ -168,7 +172,7 @@ export function App() {
           camera={{ fov: camera.fov, position: camera.interior.position, near: 0.1, far: camera.far }}
           gl={{ antialias: false, toneMapping: THREE.NoToneMapping, preserveDrawingBuffer: true }}
         >
-          <SimClockProvider clock={clock}>
+          <SimTimelineProvider timeline={timeline}>
             <ViewModeProvider mode={mode}>
               <Suspense fallback={null}>
                 <Environment site={site} />
@@ -185,14 +189,14 @@ export function App() {
                 {probeEnabled() && <Probe />}
               </Suspense>
             </ViewModeProvider>
-          </SimClockProvider>
+          </SimTimelineProvider>
           <OrbitControls makeDefault target={camera.interior.target} maxPolarAngle={Math.PI / 2 - 0.05} maxDistance={camera.maxDistance} />
           <CameraRig mode={mode} />
         </Canvas>
       </div>
       {visited2d && (
         <div style={{ ...overlay(is2d), background: color.iso2dBackground }}>
-          <Iso2D site={site} placed={placed} actors={actors} clock={clock} active={is2d} />
+          <Iso2D site={site} placed={placed} actors={actors} timeline={timeline} active={is2d} />
         </div>
       )}
       <div style={hud}>
