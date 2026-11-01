@@ -1,0 +1,9 @@
+{
+  "task": "T14",
+  "phase": "red",
+  "at": "2026-11-02T01:30:18+08:00",
+  "command": "npx vitest run scripts/deploy",
+  "exit_code": 1,
+  "fingerprint": "7c71480+a71b549dbd6d",
+  "output_tail": "- Expected\n+ Received\n\n- 0\n+ 1\n\n ❯ scripts/deploy/artifact-bundle.test.ts:44:50\n     42|   it('頁面檔改為內容格式（無 doctype/html/head/body），保留 title 與模組腳本', async () =>…\n     43|     const out = mkdtempSync(join(tmpdir(), 'pub-'))\n     44|     expect(run(await fixtureDist(), out).status).toBe(0)\n       |                                                  ^\n     45|     const page = readFileSync(join(out, 'index.html'), 'utf8')\n     46|     expect(page).not.toMatch(/<!doctype|<html|<head|<body/i)\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯\n\n FAIL  scripts/deploy/artifact-bundle.test.ts > artifact-bundle > 來源目錄不存在 → 非 0 且 stderr 說明\nAssertionError: expected '' to match /dist/\n\n- Expected:\n/dist/\n\n+ Received:\n\"\"\n\n ❯ scripts/deploy/artifact-bundle.test.ts:55:22\n     53|     const r = run('/nonexistent-dist', mkdtempSync(join(tmpdir(), 'pub…\n     54|     expect(r.status).not.toBe(0)\n     55|     expect(r.stderr).toMatch(/dist/)\n       |                      ^\n     56|     expect(readdirSync(tmpdir()).length).toBeGreaterThan(0)\n     57|   })\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯\n\n\n Test Files  1 failed (1)\n      Tests  3 failed (3)\n   Start at  01:30:20\n   Duration  447ms (import 47%, tests 42%, transform 8%, worker 3%)"
+}

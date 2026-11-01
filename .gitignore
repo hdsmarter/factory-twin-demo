@@ -3,3 +3,4 @@ dist/
 artifacts/
 assets/raw/
 .DS_Store
+dist-artifact/

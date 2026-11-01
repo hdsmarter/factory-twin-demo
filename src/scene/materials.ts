@@ -8,9 +8,11 @@ export type PbrSetId = 'smooth_concrete_floor' | 'blue_metal_plate' | 'rubberize
 
 /** 資產根路徑：跟著 Vite 的 base（部署在子路徑或 Artifact 時為相對路徑） */
 const ASSET_ROOT = `${import.meta.env.BASE_URL}assets`
+/** 模型副檔名：本機為 glb；部署到只接受文字/網頁格式的主機（Claude Artifact）時改為內嵌資料的 glTF JSON */
+const MODEL_EXT = import.meta.env.VITE_MODEL_EXT ?? 'glb'
 
 export const assetUrl = {
-  model: (id: string) => `${ASSET_ROOT}/models/${id}.glb`,
+  model: (id: string) => `${ASSET_ROOT}/models/${id}.${MODEL_EXT}`,
   hdri: (id: string) => `${ASSET_ROOT}/hdri/${id}.hdr`,
   texture: (id: PbrSetId, map: 'diff' | 'nor_gl' | 'arm') => `${ASSET_ROOT}/textures/${id}/${map}.jpg`,
   /** 任意相對於 assets/ 的檔案 */

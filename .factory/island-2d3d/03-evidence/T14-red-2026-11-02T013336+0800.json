@@ -1,0 +1,9 @@
+{
+  "task": "T14",
+  "phase": "red",
+  "at": "2026-11-02T01:33:36+08:00",
+  "command": "npx vitest run scripts/deploy",
+  "exit_code": 1,
+  "fingerprint": "7c71480+ad9a3948e0fd",
+  "output_tail": "     34|     expect(files).toEqual(['assets/models/tri.json']) // 腳本已內嵌進頁面，不另外發布\n       |                   ^\n     35|     for (const f of files) expect(f).toMatch(SERVED)\n     36|     const gltf = JSON.parse(readFileSync(join(out, 'assets/models/tri.…\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯\n\n FAIL  scripts/deploy/artifact-bundle.test.ts > artifact-bundle > 頁面檔改為內容格式，模組腳本內嵌（沙盒 iframe 的 null 來源無法以 CORS 載入外部模組）\nAssertionError: expected '<title>荒島工廠分身</title>\\n<style>\\n  /* …' not to match /<script[^>]*\\ssrc=/\n\n- Expected:\n/<script[^>]*\\ssrc=/\n\n+ Received:\n\"<title>荒島工廠分身</title>\n<style>\n  /* 全螢幕單一深色外觀的 3D／2D 展示：背景與文字色明確指定，不跟隨宿主主題 */\n  :root { --bg: #101418; --fg: #f5f7fa; color-scheme: dark; }\n  html, body { height: 100%; }\n  body { background: var(--bg); color: var(--fg); overflow: hidden; }\n</style>\n<div id=\\\"root\\\"></div>\n<script type=\\\"module\\\" crossorigin src=\\\"./assets/index-abc.js\\\"></script>\n\"\n\n ❯ scripts/deploy/artifact-bundle.test.ts:48:22\n     46|     expect(page).not.toMatch(/<!doctype|<html|<head|<body/i)\n     47|     expect(page).toContain('<title>荒島工廠分身</title>')\n     48|     expect(page).not.toMatch(/<script[^>]*\\ssrc=/)\n       |                      ^\n     49|     expect(page).toContain('<script type=\"module\">')\n     50|     expect(page).toContain('export const x = 1')\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯\n\n\n Test Files  1 failed (1)\n      Tests  2 failed | 1 passed (3)\n   Start at  01:33:41\n   Duration  558ms (tests 84%, import 10%, transform 5%, worker 1%)"
+}

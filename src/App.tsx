@@ -31,8 +31,9 @@ const font = '"Noto Sans TC", "PingFang TC", system-ui, sans-serif'
 
 const hud: CSSProperties = {
   position: 'absolute',
-  left: 24,
-  top: 20,
+  left: 'max(16px, env(safe-area-inset-left, 0px))',
+  top: 'calc(16px + env(safe-area-inset-top, 0px))',
+  maxWidth: 'calc(100% - 32px)',
   padding: '12px 16px',
   borderRadius: 8,
   background: color.hudBg,
@@ -108,7 +109,7 @@ const MODES: { mode: ViewMode; label: string }[] = [
 
 function Switcher({ mode, onChange }: { mode: ViewMode; onChange: (m: ViewMode) => void }) {
   return (
-    <div role="group" aria-label={msg.viewSwitcher} style={{ position: 'absolute', right: 24, top: 20, display: 'flex', gap: 4, padding: 4, borderRadius: 10, background: color.hudBg }}>
+    <div role="group" aria-label={msg.viewSwitcher} className="view-switcher" style={{ display: 'flex', gap: 4, padding: 4, borderRadius: 10, background: color.hudBg }}>
       {MODES.map((m) => {
         const on = m.mode === mode
         return (
@@ -163,7 +164,14 @@ export function App() {
   const is2d = mode === 'iso2d'
   return (
     <div style={{ position: 'fixed', inset: 0, background: color.background }}>
-      <style>{'@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }'}</style>
+      <style>{`@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+.view-switcher { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(16px + env(safe-area-inset-top, 0px)); }
+.view-switcher button:focus-visible { outline: 2px solid ${color.buttonActiveBg}; outline-offset: 2px; }
+@media (max-width: 640px) {
+  .view-switcher { top: auto; right: 50%; transform: translateX(50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .hud-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }`}</style>
       <div style={{ position: 'absolute', inset: 0 }}>
         <Canvas
           frameloop={is2d ? 'never' : 'always'}
@@ -202,7 +210,7 @@ export function App() {
       <div style={hud}>
         <div style={{ fontSize: 20, fontWeight: 700 }}>{msg.title}</div>
         <div style={{ fontSize: 14, opacity: 0.85, marginTop: 4 }}>{SUBTITLE[mode]}</div>
-        {!is2d && <div style={{ fontSize: 12, opacity: 0.6, marginTop: 8 }}>{msg.hint}</div>}
+        {!is2d && <div className="hud-hint" style={{ fontSize: 12, opacity: 0.6, marginTop: 8 }}>{msg.hint}</div>}
       </div>
       <Switcher mode={mode} onChange={setMode} />
     </div>

@@ -299,6 +299,29 @@
         "T11"
       ],
       "test_command": "npx playwright test e2e"
+    },
+    {
+      "id": "T14",
+      "title": "部署：Artifact 打包工具（glb→內嵌 glTF JSON、去除 .hdr、內容格式頁面）",
+      "role": "implementer",
+      "scenarios": [
+        "S9",
+        "S10"
+      ],
+      "files": [
+        "scripts/deploy/artifact-bundle.mjs",
+        "scripts/deploy/artifact-bundle.test.ts",
+        "src/scene/materials.ts",
+        "src/scene/Environment.tsx",
+        "src/vite-env.d.ts",
+        "package.json",
+        "src/App.tsx",
+        "index.html"
+      ],
+      "depends_on": [
+        "T13"
+      ],
+      "test_command": "npx vitest run scripts/deploy"
     }
   ]
 }

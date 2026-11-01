@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
     "e2e": "playwright test",
-    "assets": "bash scripts/assets/pipeline.sh assets/manifest.json"
+    "assets": "bash scripts/assets/pipeline.sh assets/manifest.json",
+    "build:artifact": "VITE_SINGLE_BUNDLE=1 VITE_MODEL_EXT=json VITE_ENV_MAP=room vite build --outDir dist-artifact --emptyOutDir && node scripts/deploy/artifact-bundle.mjs dist-artifact artifacts/publish > artifacts/publish-files.json"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
