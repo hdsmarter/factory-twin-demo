@@ -1,0 +1,8 @@
+{
+  "scenario": "S8",
+  "at": "2026-11-02T11:10:18+08:00",
+  "command": "npx vitest run src/domain/projection.test.ts src/view2d",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  5 passed (5)\n      Tests  33 passed (33)\n   Start at  11:10:19\n   Duration  726ms (tests 82%, import 12%, transform 5%, worker 1%)"
+}

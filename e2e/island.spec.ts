@@ -105,3 +105,103 @@ test('@S9 在 3D 時改變視窗大小，再切到 2D 時插畫符合新尺寸',
   await page.getByRole('button', { name: '2D 插畫' }).click()
   await expect(page.locator('svg[data-view="iso2d"]')).toHaveAttribute('width', '1280')
 })
+
+test('@S15 在 2D 插畫上拖曳平移、以游標為中心縮放、雙擊重設', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.goto('/?freeze=8')
+  await page.getByRole('button', { name: '2D 插畫' }).click()
+  const svg = page.locator('svg[data-view="iso2d"]')
+  await expect(svg).toBeVisible()
+  const vb = async () => (await svg.getAttribute('viewBox'))!.split(' ').map(Number) as [number, number, number, number]
+  const initial = await vb()
+  const sceneAt = (b: number[], px: number, py: number) => ({ u: b[0]! + (px / 1280) * b[2]!, v: b[1]! + (py / 720) * b[3]! })
+
+  // 滾輪縮放：以游標為中心（游標下的場景點不變）
+  const cursor = { x: 500, y: 420 }
+  const before = sceneAt(initial, cursor.x, cursor.y)
+  await page.mouse.move(cursor.x, cursor.y)
+  await page.mouse.wheel(0, -400)
+  await expect.poll(async () => (await vb())[2]).toBeLessThan(initial[2] / 1.5)
+  const zoomed = await vb()
+  const after = sceneAt(zoomed, cursor.x, cursor.y)
+  expect(Math.abs(after.u - before.u)).toBeLessThan(initial[2] * 0.002)
+  expect(Math.abs(after.v - before.v)).toBeLessThan(initial[3] * 0.002)
+
+  // 拖曳：內容跟著指標移動
+  await page.mouse.move(640, 360)
+  await page.mouse.down()
+  await page.mouse.move(700, 390, { steps: 5 })
+  await page.mouse.up()
+  const dragged = await vb()
+  expect(dragged[0] - zoomed[0]).toBeCloseTo((-60 / 1280) * zoomed[2], 1)
+  expect(dragged[1] - zoomed[1]).toBeCloseTo((-30 / 720) * zoomed[3], 1)
+
+  // 雙擊重設
+  await page.mouse.dblclick(640, 360)
+  await expect.poll(async () => (await vb()).map((n) => n.toFixed(3)).join(' ')).toBe(initial.map((n) => n.toFixed(3)).join(' '))
+
+  // 縮小有下限：不會比預設構圖更小
+  await page.mouse.wheel(0, 2000)
+  await page.waitForTimeout(200)
+  expect((await vb())[2]).toBeCloseTo(initial[2], 3)
+
+  // 鍵盤：+ 放大、0 重設
+  await page.getByRole('application', { name: /工廠等角插畫/ }).focus()
+  await page.keyboard.press('+')
+  await expect.poll(async () => (await vb())[2]).toBeLessThan(initial[2])
+  await page.keyboard.press('0')
+  await expect.poll(async () => (await vb())[2].toFixed(3)).toBe(initial[2].toFixed(3))
+})
+
+test('@S15 2D 互動細節：右鍵不拖曳、連續兩次短拖曳不誤判雙擊、不攔截瀏覽器縮放快捷鍵、焦點可見', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.goto('/?freeze=8')
+  await page.getByRole('button', { name: '2D 插畫' }).click()
+  const svg = page.locator('svg[data-view="iso2d"]')
+  await expect(svg).toBeVisible()
+  const vb = async () => (await svg.getAttribute('viewBox'))!
+  const initial = await vb()
+  await page.mouse.move(640, 360)
+  await page.mouse.wheel(0, -600)
+  await expect.poll(vb).not.toBe(initial)
+  const zoomed = await vb()
+
+  // 右鍵按住移動：不平移
+  await page.mouse.move(640, 360)
+  await page.mouse.down({ button: 'right' })
+  await page.mouse.move(700, 400, { steps: 4 })
+  await page.mouse.up({ button: 'right' })
+  expect(await vb()).toBe(zoomed)
+
+  // 同一點快速兩次短拖曳：保留平移結果，不被當成雙擊重設
+  for (let i = 0; i < 2; i++) {
+    await page.mouse.move(640, 360)
+    await page.mouse.down()
+    await page.mouse.move(670, 360, { steps: 3 })
+    await page.mouse.up()
+  }
+  const dragged = await vb()
+  expect(dragged).not.toBe(zoomed)
+  expect(dragged).not.toBe(initial)
+
+  // 焦點在 2D 容器時，Ctrl/Cmd + = 不被攔截（瀏覽器頁面縮放仍可用）
+  const app = page.getByRole('application', { name: /工廠等角插畫/ })
+  await app.focus()
+  const prevented = await app.evaluate((el) => {
+    const e = new KeyboardEvent('keydown', { key: '=', ctrlKey: true, bubbles: true, cancelable: true })
+    el.dispatchEvent(e)
+    return e.defaultPrevented
+  })
+  expect(prevented).toBe(false)
+  expect(await vb()).toBe(dragged)
+
+  // 鍵盤聚焦時有可見外框；操作說明以 aria-describedby 指向可讀文字
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Shift+Tab')
+  await expect(app).toBeFocused()
+  const outline = await app.evaluate((el) => getComputedStyle(el).outlineStyle)
+  expect(outline).not.toBe('none')
+  const describedBy = await app.getAttribute('aria-describedby')
+  expect(describedBy).toBeTruthy()
+  await expect(page.locator(`#${describedBy}`)).toContainText('拖曳')
+})

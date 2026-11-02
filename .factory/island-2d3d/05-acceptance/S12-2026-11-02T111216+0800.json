@@ -1,0 +1,8 @@
+{
+  "scenario": "S12",
+  "at": "2026-11-02T11:12:16+08:00",
+  "command": "npx playwright test e2e/island.spec.ts -g @S12",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "Running 1 test using 1 worker\n\n  ✓  1 [chromium] › e2e/island.spec.ts:50:1 › @S12 島嶼全景與廠內視角切換 (28.1s)\n\n  1 passed (28.5s)"
+}

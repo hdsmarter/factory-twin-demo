@@ -1,0 +1,9 @@
+{
+  "task": "T19",
+  "phase": "red",
+  "at": "2026-11-02T11:09:53+08:00",
+  "command": "npx vitest run src/view2d/panZoom.test.ts",
+  "exit_code": 1,
+  "fingerprint": "0226200+977cf339620d",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n ❯ src/view2d/panZoom.test.ts (4 tests | 1 failed) 4ms\n   ❯ panZoom (4)\n     × @S15 以游標為中心縮放：游標下的場景點不變 2ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  src/view2d/panZoom.test.ts > panZoom > @S15 以游標為中心縮放：游標下的場景點不變\nAssertionError: expected 12.85714285714286 to be close to 10, received difference is 2.8571428571428594, but expected 5e-10\n ❯ src/view2d/panZoom.test.ts:18:23\n     16|       const after = sceneAt(box, v1, fx, fy)\n     17|       expect(v1.zoom).toBeCloseTo(2.8, 12)\n     18|       expect(after.u).toBeCloseTo(before.u, 9)\n       |                       ^\n     19|       expect(after.v).toBeCloseTo(before.v, 9)\n     20|     }\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed (1)\n      Tests  1 failed | 3 passed (4)\n   Start at  11:09:54\n   Duration  106ms (transform 54%, import 24%, tests 14%, worker 8%)"
+}

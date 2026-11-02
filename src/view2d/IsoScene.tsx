@@ -6,21 +6,27 @@ import type { Actor, ActorType, IslandSpec, PlacedEquipment, Site } from '../dom
 import { ISO_DIRECTION, isoProject } from '../domain/projection'
 import type { FrameState } from '../domain/simulate'
 import { AGV_DIMENSIONS, FOREST_COUNT, WORKER_HEIGHT } from '../domain/specs'
+import { applyView, PAN_ZOOM_DEFAULT, type PanZoom } from './panZoom'
 import { agv as agvTone, building as bt, land, sea } from './palette'
-import { PeepFigure } from './Peep'
+import { WorkerFigure } from './Worker'
 import { At, EquipmentShape, equipmentLayer, equipmentTop, Flat, orientedRect, outline, Prism, pt, Tree, type XZ } from './shapes'
 
 export interface IsoSceneProps {
   site: Site
   placed: PlacedEquipment[]
   actors: Actor[]
-  /** simulate(site, placed, t) 的結果；畫面只依 state 而定（t 保留給整合者對照用） */
+  /** simulate(site, placed, t) 的結果 */
   state: FrameState
+  /** 模擬時間（秒）：人物的呼吸、擺動等次要動作 */
   t: number
   width: number
   height: number
   /** island：整座島；factory：只框廠房周圍 ±25 m */
   framing?: 'island' | 'factory'
+  /** 使用者的平移縮放（相對預設構圖） */
+  view?: PanZoom
+  /** 裝飾性次要動作（呼吸、擺髮）；使用者偏好減少動態時傳 false */
+  ambient?: boolean
 }
 
 const COAST_SAMPLES = 180
@@ -241,9 +247,18 @@ function Agv({ pose, enlarge }: { pose: ActorPose; enlarge: number }) {
 }
 
 /** 2D 移動體註冊表：mapped type 保證每種 ActorType 都有外觀，不會靜默退回 AGV。 */
-const ACTOR_VIEWS: { [K in ActorType]: { radius: number; height: number; draw: (pose: ActorPose, look: number, enlarge: number) => ReactNode } } = {
-  worker: { radius: WORKER_RADIUS, height: WORKER_HEIGHT, draw: (pose, look, enlarge) => <PeepFigure pose={pose} look={look} enlarge={enlarge} /> },
-  agv: { radius: AGV_DIMENSIONS.length / 2, height: AGV_DIMENSIONS.height, draw: (pose, _look, enlarge) => <Agv pose={pose} enlarge={enlarge} /> },
+interface DrawContext {
+  actor: Actor
+  pose: ActorPose
+  look: number
+  enlarge: number
+  t: number
+  ambient: boolean
+}
+
+const ACTOR_VIEWS: { [K in ActorType]: { radius: number; height: number; draw: (c: DrawContext) => ReactNode } } = {
+  worker: { radius: WORKER_RADIUS, height: WORKER_HEIGHT, draw: (c) => <WorkerFigure actor={c.actor} pose={c.pose} look={c.look} enlarge={c.enlarge} t={c.t} ambient={c.ambient} /> },
+  agv: { radius: AGV_DIMENSIONS.length / 2, height: AGV_DIMENSIONS.height, draw: (c) => <Agv pose={c.pose} enlarge={c.enlarge} /> },
 }
 
 const withPoint = (r: Rect, p: XZ): Rect => ({ minX: Math.min(r.minX, p.x), maxX: Math.max(r.maxX, p.x), minZ: Math.min(r.minZ, p.z), maxZ: Math.max(r.maxZ, p.z) })
@@ -263,7 +278,7 @@ function Entity({ id, at, children }: { id: string; at: XZ; children: ReactNode 
  * 等角 2D 插畫：與 3D 共用 isoProject；由遠到近依畫家演算法繪製。
  * 只依 props 決定輸出（不讀時鐘、不用亂數）。
  */
-export function IsoScene({ site, placed, actors, state, width, height, framing = 'island' }: IsoSceneProps) {
+export function IsoScene({ site, placed, actors, state, t, width, height, framing = 'island', view = PAN_ZOOM_DEFAULT, ambient = true }: IsoSceneProps) {
   const island = site.environment?.island
   const shape = useMemo(() => (island ? islandOutline(island) : undefined), [island])
   const trees = useMemo(() => {
@@ -271,7 +286,8 @@ export function IsoScene({ site, placed, actors, state, width, height, framing =
     const { width: W, depth: D } = site.bounds
     return forestPlacement(island, { minX: -W / 2, maxX: W / 2, minZ: -D / 2, maxZ: D / 2 }, FOREST_COUNT)
   }, [island, site.bounds])
-  const box = viewBoxOf(site, framing, width, height, shape?.shallow ?? [])
+  const frame = viewBoxOf(site, framing, width, height, shape?.shallow ?? [])
+  const box = applyView(frame, view)
   const enlarge = ENLARGE[framing]
   const wave = state.environment?.wave ?? 0
 
@@ -323,7 +339,7 @@ export function IsoScene({ site, placed, actors, state, width, height, framing =
           layer: 3,
           node: (
             <Entity key={a.id} id={a.id} at={pose}>
-              {view.draw(pose, i, enlarge)}
+              {view.draw({ actor: a, pose, look: i, enlarge, t, ambient })}
             </Entity>
           ),
         },

@@ -1,0 +1,8 @@
+{
+  "scenario": "S13",
+  "at": "2026-11-02T11:10:05+08:00",
+  "command": "npx vitest run src/view2d/rig src/view2d/Worker.test.ts src/domain/actors.test.ts",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  3 passed (3)\n      Tests  17 passed (17)\n   Start at  11:10:05\n   Duration  717ms (tests 87%, transform 6%, import 6%, worker 1%)"
+}

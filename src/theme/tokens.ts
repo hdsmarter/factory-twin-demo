@@ -20,6 +20,8 @@ export const color = {
   hudBg: 'rgba(16, 20, 24, 0.72)',
   buttonActiveBg: '#f5f7fa',
   buttonActiveText: '#101418',
+  /** 鍵盤焦點外框（淺色 2D 背景上需深色才看得見） */
+  focusRing: '#0b57d0',
   iso2dBackground: '#9fd3e6',
   background: '#101418',
   floorTint: '#6c737a',

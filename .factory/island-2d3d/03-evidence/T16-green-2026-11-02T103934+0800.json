@@ -1,0 +1,9 @@
+{
+  "task": "T16",
+  "phase": "green",
+  "at": "2026-11-02T10:39:34+08:00",
+  "command": "npx vitest run src/domain/actors.test.ts",
+  "exit_code": 0,
+  "fingerprint": "0226200+69bcb8b129f2",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  1 passed (1)\n      Tests  9 passed (9)\n   Start at  10:39:35\n   Duration  123ms (tests 63%, import 16%, transform 15%, worker 5%)"
+}

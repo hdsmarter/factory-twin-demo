@@ -1,5 +1,5 @@
 /**
- * 2D 等角插畫的配色（Open Peeps 風格：扁平色塊＋粗黑描邊＋留白）。
+ * 2D 等角插畫的配色（扁平色塊＋粗黑描邊＋留白）。
  * view2d 元件內不寫色碼，一律取自這裡。三色方塊：top（受光）、left（-x 面向相機）、right（+z 面向相機）。
  */
 export const ink = '#1d1d1f'
@@ -54,9 +54,29 @@ export const equipment = {
 } as const satisfies Record<string, Tone | string>
 
 export const people = {
-  skin: '#ffffff',
   shadow: 'rgba(29, 29, 31, 0.18)',
+  shoe: '#2b2f33',
 } as const
+
+/** 骨架人物外觀：遠側肢體（far）較暗以製造前後景深；依人員序號輪替 */
+export interface WorkerLook {
+  skin: string
+  skinFar: string
+  shirt: string
+  shirtFar: string
+  pants: string
+  pantsFar: string
+  hair: string
+  /** 頭飾：安全帽／馬尾／包頭 */
+  headwear: 'helmet' | 'ponytail' | 'bun'
+  helmet: string
+}
+
+export const workerLooks: readonly WorkerLook[] = [
+  { skin: '#f1c7a5', skinFar: '#d9ae8c', shirt: '#f08a24', shirtFar: '#cf7419', pants: '#2f3e56', pantsFar: '#243146', hair: '#2b211b', headwear: 'helmet', helmet: '#f2c200' },
+  { skin: '#c98e66', skinFar: '#b07754', shirt: '#3c6e9e', shirtFar: '#2f5a83', pants: '#2b5279', pantsFar: '#204062', hair: '#2b1d16', headwear: 'ponytail', helmet: '#f2c200' },
+  { skin: '#e8b58e', skinFar: '#cf9c76', shirt: '#4e9a69', shirtFar: '#3f8157', pants: '#55595f', pantsFar: '#44474c', hair: '#6b4a2e', headwear: 'bun', helmet: '#f2c200' },
+]
 
 export const agv = {
   body: { top: '#f6c945', left: '#e0b032', right: '#c99a22' },

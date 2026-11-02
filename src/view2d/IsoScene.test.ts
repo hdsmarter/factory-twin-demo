@@ -96,6 +96,18 @@ describe('IsoScene', () => {
       }
     })
 
+    it.each(times)('@S14 人員以骨架繪製：每位人員一組 rig、不再使用固定姿勢圖（t=%s）', (t) => {
+      const svg = render(t)
+      for (const a of workers) {
+        const starts = [...svg.matchAll(/<[a-z]+\b[^>]*\bdata-entity-id="([^"]*)"[^>]*>/g)]
+        const k = starts.findIndex((m) => m[1] === a.id)
+        const scope = svg.slice(starts[k]!.index, starts[k + 1]?.index ?? svg.length)
+        expect(scope.match(/data-part="rig"/g), a.id).toHaveLength(1)
+        // 6 段肢體（雙腿各大小腿一條路徑 + 雙臂上臂 + 前臂）＋腳＋軀幹，每段描邊 + 色線兩條 path
+        expect((scope.match(/<path /g) ?? []).length, a.id).toBeGreaterThanOrEqual(2 * (2 + 2 + 4 + 1))
+      }
+    })
+
     it.each(times)('AGV 底面中心 = isoProject(pose.x, 0, pose.z)（t=%s）', (t) => {
       const state = simulate(site, placed, t)
       const svg = render(t)

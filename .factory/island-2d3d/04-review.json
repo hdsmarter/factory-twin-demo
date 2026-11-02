@@ -9,6 +9,11 @@
       "id": "B",
       "lens": "設計原則＋UX/a11y",
       "agent": "factory-reviewer（獨立 context）"
+    },
+    {
+      "id": "R",
+      "lens": "第三輪：正確性／測試品質＋設計原則＋UX/a11y",
+      "agent": "factory-reviewer（獨立 context）"
     }
   ],
   "findings": [
@@ -281,6 +286,146 @@
       "summary": "逐格錄影就緒度",
       "status": "open",
       "note": "SimTimeline 已就緒；frameloop/advance、鏡頭腳本、關閉阻尼排入階段 5。"
+    },
+    {
+      "id": "R1",
+      "severity": "P1",
+      "principle": "B1、T3",
+      "file": "src/view2d/Worker.tsx",
+      "line": 15,
+      "summary": "無停留轉角處 heading 瞬變，著地腳一格瞬移約 1/4 身高；測試只驗固定方向",
+      "status": "fixed",
+      "note": "T21：forwardAt 以二分法求轉角時刻、前後 0.4 s smoothstep 轉身；新增沿真實路線、經投影量畫面腳踝的測試（直線段 < 1e-6、轉角 < 2% 身高／格；修前 16.8%）。轉角處仍有約 1.6% 身高／格的弧線滑動，屬著地腳不在骨盆下方時轉身的固有現象。"
+    },
+    {
+      "id": "R2",
+      "severity": "P1",
+      "principle": "B1",
+      "file": "src/domain/actors.ts",
+      "line": 115,
+      "summary": "起點無停留時週期邊界 distance 歸零、相位跳動",
+      "status": "fixed",
+      "note": "改採步幅微調：一圈走整數個步態週期（ActorPose 新增 lap），reach 依微調步幅回推 → 相位連續、場景仍保持週期循環（未採累計距離：會破壞 scenePeriod 循環）。gait.test 加入起點無停留與全程行走路線。"
+    },
+    {
+      "id": "R3",
+      "severity": "P2",
+      "principle": "B1",
+      "file": "src/domain/actors.ts",
+      "line": 81,
+      "summary": "全程行走時每週期縮回站姿",
+      "status": "fixed",
+      "note": "runOf 對整圈同一動作回傳無限區段；elapsed 自 t=0 起算、duration=Infinity；新增測試。"
+    },
+    {
+      "id": "R4",
+      "severity": "P2",
+      "principle": "B1、T3",
+      "file": "src/view2d/rig/gait.ts",
+      "line": 293,
+      "summary": "起停 0.3–0.4 s 混合期間身體全速前進、腳被拉回站姿而滑行",
+      "status": "open",
+      "note": "需在 domain 為 actorPose 加入加減速（會連動 3D 與時間軸對齊），另立任務處理；目前起步／停下每格滑動約 1.3% 身高。"
+    },
+    {
+      "id": "R5",
+      "severity": "P1",
+      "principle": "T1",
+      "file": "03-evidence/T17-red, T19-red",
+      "line": 8,
+      "summary": "T17、T19 red 收據為 import 錯誤而非斷言失敗",
+      "status": "fixed",
+      "note": "以注入錯誤實作補取斷言層級的 red：T17（著地期係數 2→1.9：no-slip 斷言失敗）、T19（zoomAt 不保持游標點：斷言失敗），還原後重記 green。T18 red 為以改動前 commit 跑同一測試（事後補驗，如實揭露）。"
+    },
+    {
+      "id": "R6",
+      "severity": "P2",
+      "principle": "T3",
+      "file": "src/view2d/rig/gait.test.ts",
+      "line": 78,
+      "summary": "相鄰兩格門檻 12° 太鬆",
+      "status": "fixed",
+      "note": "依實測改為腿 10°（擺動期膝實測 8.6°）、其餘 6°；收緊後抓到工作動作在停留結束時的抽動（10.7°/格），以工作循環對齊停留、sine 緩動、關鍵格調整修正。"
+    },
+    {
+      "id": "R7",
+      "severity": "P1",
+      "principle": "WCAG 2.4.7",
+      "file": "src/App.tsx",
+      "line": 106,
+      "summary": "2D 容器可聚焦但 outline:none，鍵盤焦點不可見",
+      "status": "fixed",
+      "note": "改 .iso2d:focus-visible 3px 外框（token color.focusRing #0b57d0，對 2D 背景約 3.9:1）；e2e 驗證 outlineStyle≠none。"
+    },
+    {
+      "id": "R8",
+      "severity": "P2",
+      "principle": "WCAG 1.4.4",
+      "file": "src/view2d/usePanZoom.ts",
+      "line": 74,
+      "summary": "攔截 Ctrl/Cmd + = 等瀏覽器縮放快捷鍵",
+      "status": "fixed",
+      "note": "有修飾鍵時直接 return；e2e 驗證 defaultPrevented=false。"
+    },
+    {
+      "id": "R9",
+      "severity": "P2",
+      "principle": "指標狀態",
+      "file": "src/view2d/usePanZoom.ts",
+      "line": 39,
+      "summary": "右鍵／中鍵也會拖曳；放開事件遺失時持續平移",
+      "status": "fixed",
+      "note": "只接受 button 0；mouse 且 buttons=0 時清除指標；加 lostpointercapture；e2e 驗證右鍵不平移。"
+    },
+    {
+      "id": "R10",
+      "severity": "P2",
+      "principle": "可發現性",
+      "file": "src/App.tsx",
+      "line": 102,
+      "summary": "操作說明只在 aria-description；手機隱藏提示",
+      "status": "fixed",
+      "note": "改 aria-describedby 指向 visually-hidden 說明；≤640px 時 2D 提示仍顯示。"
+    },
+    {
+      "id": "R11",
+      "severity": "P2",
+      "principle": "reduced-motion",
+      "file": "src/view2d/Worker.tsx",
+      "line": 32,
+      "summary": "減少動態時呼吸、擺髮仍持續",
+      "status": "fixed",
+      "note": "useReducedMotion（matchMedia，隨設定即時更新）→ IsoScene ambient=false → 停用呼吸與擺髮；行走與工作屬內容保留。"
+    },
+    {
+      "id": "R12",
+      "severity": "P3",
+      "principle": "i18n",
+      "file": "src/App.tsx",
+      "line": 102,
+      "summary": "全形分號寫在元件裡串接",
+      "status": "fixed",
+      "note": "改為單一 i18n 字串 iso2dDescription。"
+    },
+    {
+      "id": "R13",
+      "severity": "P3",
+      "principle": "語意角色",
+      "file": "src/App.tsx",
+      "line": 100,
+      "summary": "role=application 後失去 img 語意、SVG 圖元可能外露",
+      "status": "fixed",
+      "note": "不需改：內層 svg 原本即 aria-hidden，圖元不會外露；外層 application 帶 aria-label 與 aria-describedby。"
+    },
+    {
+      "id": "R14",
+      "severity": "P3",
+      "principle": "手勢衝突",
+      "file": "src/view2d/usePanZoom.ts",
+      "line": 97,
+      "summary": "快速兩次短拖曳被當成雙擊重設",
+      "status": "fixed",
+      "note": "記錄按壓期間移動距離，超過 4 px 視為拖曳，其後的 dblclick 不重設；e2e 驗證。"
     }
   ]
 }

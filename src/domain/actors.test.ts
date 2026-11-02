@@ -94,4 +94,56 @@ describe('actorPose', () => {
       expect(Number.isFinite(q.x) && Number.isFinite(q.z) && Number.isFinite(q.heading), `t=${i / 10}`).toBe(true)
     }
   })
+  it('@S13 distance：本週期已走距離，行進中遞增、停留時不變、轉角連續', () => {
+    expect(actorPose(worker, 1).distance).toBe(0) // 起點停留中
+    expect(actorPose(worker, 2 + 7.5 + 5 + 1).distance).toBeCloseTo(10, 9) // 停在 P2
+    let prev = 0
+    for (const t of times) {
+      const d = actorPose(worker, t).distance
+      expect(d, `t=${t}`).toBeGreaterThanOrEqual(prev - 1e-9)
+      expect(d - prev, `t=${t}`).toBeLessThan(0.8 * (30 / N) + 1e-9) // 每格最多走 speed·Δt
+      prev = d
+    }
+  })
+
+  it('@S14 elapsed／duration：同一動作連續的區段合併計時（轉角不中斷）', () => {
+    // 2 s 停留 → 行進 7.5 s 到 P1（無停留）→ 行進 5 s 到 P2：行走連續 12.5 s
+    const p = actorPose(worker, 2 + 7.5 + 0.1)
+    expect(p.action).toBe('walk')
+    expect(p.elapsed).toBeCloseTo(7.6, 9)
+    expect(p.duration).toBeCloseTo(12.5, 9)
+    const w = actorPose(worker, 2 + 12.5 + 1)
+    expect([w.action, w.duration]).toEqual(['work', 3])
+    expect(w.elapsed).toBeCloseTo(1, 9)
+    for (const t of times) {
+      const q = actorPose(worker, t)
+      expect(q.elapsed >= 0 && q.elapsed <= q.duration + 1e-9, `t=${t}`).toBe(true)
+    }
+  })
+
+  it('@S14 elapsed／duration：週期首尾同為行進時跨週期合併', () => {
+    // 起點無停留：最後一段行進接回第一段行進
+    const a: Actor = { id: 'L', name: 'l', type: 'worker', cycleSeconds: 12, route: [{ x: 0, z: 0 }, { x: 5, z: 0, dwell: 2 }] }
+    // 行進共 10 s（各 5 s），停留 2 s：時間軸 [0,5) 行進、[5,7) 停留、[7,12) 行進
+    const p = actorPose(a, 1)
+    expect(p.action).toBe('walk')
+    expect(p.duration).toBeCloseTo(10, 9)
+    expect(p.elapsed).toBeCloseTo(6, 9)
+    const q = actorPose(a, 8)
+    expect(q.elapsed).toBeCloseTo(1, 9)
+  })
+  it('@S13 lap = 路線一圈總長；distance 每週期由 0 走到 lap', () => {
+    const p = actorPose(worker, 1)
+    expect(p.lap).toBeCloseTo(20, 9)
+    expect(actorPose(worker, 30 - 1e-6).distance).toBeCloseTo(20, 4)
+  })
+
+  it('@S14 全程行走（無任何停留）：動作不在週期邊界重新計時', () => {
+    const a: Actor = { id: 'R', name: 'r', type: 'worker', cycleSeconds: 10, route: [{ x: 0, z: 0 }, { x: 5, z: 0 }] }
+    const p = actorPose(a, 30 - 1e-3)
+    const q = actorPose(a, 30 + 1e-3)
+    expect(p.duration).toBe(Infinity)
+    expect(q.elapsed).toBeGreaterThan(1) // 不是剛起步
+    expect(p.duration - p.elapsed).toBeGreaterThan(1) // 也不是快停下
+  })
 })

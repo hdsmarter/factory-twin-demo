@@ -1,0 +1,9 @@
+{
+  "task": "T17",
+  "phase": "green",
+  "at": "2026-11-02T11:09:54+08:00",
+  "command": "npx vitest run src/view2d/rig",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  1 passed (1)\n      Tests  5 passed (5)\n   Start at  11:09:54\n   Duration  707ms (tests 97%, transform 1%, import 1%)"
+}

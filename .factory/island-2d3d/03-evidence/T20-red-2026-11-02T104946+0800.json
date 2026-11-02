@@ -1,0 +1,9 @@
+{
+  "task": "T20",
+  "phase": "red",
+  "at": "2026-11-02T10:49:46+08:00",
+  "command": "npx playwright test e2e/island.spec.ts -g @S15",
+  "exit_code": 1,
+  "fingerprint": "0226200+ba1e2b6c2835",
+  "output_tail": "Running 1 test using 1 worker\n\n  ✘  1 [chromium] › e2e/island.spec.ts:109:1 › @S15 在 2D 插畫上拖曳平移、以游標為中心縮放、雙擊重設 (5.9s)\n\n\n  1) [chromium] › e2e/island.spec.ts:109:1 › @S15 在 2D 插畫上拖曳平移、以游標為中心縮放、雙擊重設 ───────────────────────\n\n    Error: expect(received).toBeLessThan(expected)\n\n    Expected: < 46.17009051205576\n    Received:   69.25513576808363\n\n    Call Log:\n    - Timeout 5000ms exceeded while waiting on the predicate\n\n      122 |   await page.mouse.move(cursor.x, cursor.y)\n      123 |   await page.mouse.wheel(0, -400)\n    > 124 |   await expect.poll(async () => (await vb())[2]).toBeLessThan(initial[2] / 1.5)\n          |                                                  ^\n      125 |   const zoomed = await vb()\n      126 |   const after = sceneAt(zoomed, cursor.x, cursor.y)\n      127 |   expect(Math.abs(after.u - before.u)).toBeLessThan(initial[2] * 0.002)\n        at /Users/tonyjiang/Code/ai-smarter-tw-影片/e2e/island.spec.ts:124:50\n\n    Error Context: artifacts/playwright/island--S15-在-2D-插畫上拖曳平移、以游標為中心縮放、雙擊重設-chromium/error-context.md\n\n  1 failed\n    [chromium] › e2e/island.spec.ts:109:1 › @S15 在 2D 插畫上拖曳平移、以游標為中心縮放、雙擊重設 ────────────────────────"
+}

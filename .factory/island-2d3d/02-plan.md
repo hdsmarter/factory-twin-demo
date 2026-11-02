@@ -64,3 +64,13 @@ export function isoProject(x: number, y: number, z: number): { u: number; v: num
 - S8：`npx vitest run src/domain/projection.test.ts src/view2d`
 - S9、S10、S12：`npx playwright test e2e/island.spec.ts`
 - S11：`npx vitest run scripts/assets`
+
+## 第三輪：2D 骨架人物與拖曳縮放（S13–S15）
+
+- 人物改為自製骨架（取代 Open Peeps 固定姿勢圖）：`view2d/rig/gait.ts` 為純函數，`t → 關節角度`；`Rig.tsx` 只吃角度。
+- 步態以「腳的軌跡」定義（著地期腳在世界座標不動、擺動期抬腳），再以兩段 IK 求大腿／小腿角度 → 腳不打滑由構造保證，並以測試驗證。
+- 相位 = 本段已走距離 / 步幅；`ActorPose` 新增 `elapsed`、`duration`（本段已經過／總秒數），用於相位與起步／停下的緩動轉換。
+- 動畫原則：起步與停下 0.3 s 緩動混合；工作動作含預備與跟隨（前臂延遲）；呼吸為次要動作。
+- 平移縮放：`view2d/panZoom.ts` 純函數（狀態 `{zoom, x, y}`，x/y 以預設構圖寬高為單位），`usePanZoom` 只處理指標事件；IsoScene 由預設 viewBox 套用視角。
+- 依賴方向不變：view2d 只依賴 domain。
+- 驗收：S13、S14：`npx vitest run src/view2d/rig`；S15：`npx vitest run src/view2d/panZoom.test.ts` 與 `npx playwright test e2e/island.spec.ts`。

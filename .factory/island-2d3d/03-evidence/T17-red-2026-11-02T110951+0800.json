@@ -1,0 +1,9 @@
+{
+  "task": "T17",
+  "phase": "red",
+  "at": "2026-11-02T11:09:51+08:00",
+  "command": "npx vitest run src/view2d/rig",
+  "exit_code": 1,
+  "fingerprint": "0226200+977cf339620d",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n ❯ src/view2d/rig/gait.test.ts (5 tests | 2 failed) 586ms\n   ❯ gait (5)\n     × @S13 著地腳在畫面上不打滑（各種行進方向） 2ms\n     × @S14 相鄰兩格（1/60 s）角度不跳動 468ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  src/view2d/rig/gait.test.ts > gait > @S13 著地腳在畫面上不打滑（各種行進方向）\nAssertionError: fwd=1,0 phase=0.015000000000000001: expected 0.00008181818181812739 to be less than 0.000001\n ❯ src/view2d/rig/gait.test.ts:35:110\n     33|         if (phase > 0.01 && phase < GAIT.stance - 0.01) {\n     34|           anchor ??= ankle\n     35|           expect(Math.hypot(ankle.u - anchor.u, ankle.v - anchor.v), `…\n       |                                                                                                              ^\n     36|           checked++\n     37|         }\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯\n\n FAIL  src/view2d/rig/gait.test.ts > gait > @S14 相鄰兩格（1/60 s）角度不跳動\nAssertionError: R t=0.550 kneeN: expected 10.244152553394432 to be less than 10\n ❯ src/view2d/rig/gait.test.ts:83:106\n     81|         const p = workerPose(actorPose(a, t), t, HEIGHT_M)\n     82|         // 實測正常步態：擺動期膝每格約 8.6°、手臂約 2–5°；超過即視為抽動\n     83|         for (const key of keys) expect(Math.abs(p[key] - prev[key]), `…\n       |                                                                                                          ^\n     84|         expect(Math.abs(p.hip - prev.hip), `${a.id} t=${t} hip`).toBeL…\n     85|         prev = p\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯\n\n\n Test Files  1 failed (1)\n      Tests  2 failed | 3 passed (5)\n   Start at  11:09:52\n   Duration  738ms (tests 93%, transform 4%, import 2%, worker 1%)"
+}

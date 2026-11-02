@@ -1,0 +1,8 @@
+{
+  "scenario": "S14",
+  "at": "2026-11-02T11:10:06+08:00",
+  "command": "npx vitest run src/view2d/rig src/view2d/IsoScene.test.ts src/domain/actors.test.ts",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  3 passed (3)\n      Tests  37 passed (37)\n   Start at  11:10:07\n   Duration  719ms (tests 86%, import 8%, transform 5%, worker 1%)"
+}

@@ -1,0 +1,9 @@
+{
+  "task": "T19",
+  "phase": "green",
+  "at": "2026-11-02T11:09:55+08:00",
+  "command": "npx vitest run src/view2d/panZoom.test.ts",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  1 passed (1)\n      Tests  4 passed (4)\n   Start at  11:09:56\n   Duration  96ms (import 41%, transform 31%, tests 14%, worker 14%)"
+}

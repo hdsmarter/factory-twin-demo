@@ -1,0 +1,9 @@
+{
+  "task": "T18",
+  "phase": "red",
+  "at": "2026-11-02T10:54:19+08:00",
+  "command": "bash -c cd '/Users/tonyjiang/Code/ai-smarter-tw-影片/artifacts/headcheck' && npx vitest run src/view2d/IsoScene.test.ts",
+  "exit_code": 1,
+  "fingerprint": "0226200+75dbe666ccb0",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片/artifacts/headcheck\n\n ❯ src/view2d/IsoScene.test.ts (21 tests | 3 failed) 351ms\n   ❯ IsoScene (21)\n     ❯ @S8 實際繪製的圖元落在 domain 位置的投影上 (16)\n       × @S14 人員以骨架繪製：每位人員一組 rig、不再使用固定姿勢圖（t=3.7） 27ms\n       × @S14 人員以骨架繪製：每位人員一組 rig、不再使用固定姿勢圖（t=13.7） 18ms\n       × @S14 人員以骨架繪製：每位人員一組 rig、不再使用固定姿勢圖（t=17.3） 12ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  src/view2d/IsoScene.test.ts > IsoScene > @S8 實際繪製的圖元落在 domain 位置的投影上 > @S14 人員以骨架繪製：每位人員一組 rig、不再使用固定姿勢圖（t=3.7）\n FAIL  src/view2d/IsoScene.test.ts > IsoScene > @S8 實際繪製的圖元落在 domain 位置的投影上 > @S14 人員以骨架繪製：每位人員一組 rig、不再使用固定姿勢圖（t=13.7）\n FAIL  src/view2d/IsoScene.test.ts > IsoScene > @S8 實際繪製的圖元落在 domain 位置的投影上 > @S14 人員以骨架繪製：每位人員一組 rig、不再使用固定姿勢圖（t=17.3）\nAssertionError: WK-01: Target cannot be null or undefined.\n ❯ src/view2d/IsoScene.test.ts:105:55\n    103|         const k = starts.findIndex((m) => m[1] === a.id)\n    104|         const scope = svg.slice(starts[k]!.index, starts[k + 1]?.index…\n    105|         expect(scope.match(/data-part=\"rig\"/g), a.id).toHaveLength(1)\n       |                                                       ^\n    106|         // 6 段肢體（雙腿各大小腿一條路徑 + 雙臂上臂 + 前臂）＋腳＋軀幹，每段描邊 + 色線兩條 path\n    107|         expect((scope.match(/<path /g) ?? []).length, a.id).toBeGreate…\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯\n\n\n Test Files  1 failed (1)\n      Tests  3 failed | 18 passed (21)\n   Start at  10:54:20\n   Duration  662ms (tests 65%, transform 20%, import 14%, worker 1%)"
+}

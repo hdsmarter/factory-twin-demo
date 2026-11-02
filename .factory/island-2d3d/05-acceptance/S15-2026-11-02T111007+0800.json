@@ -1,0 +1,8 @@
+{
+  "scenario": "S15",
+  "at": "2026-11-02T11:10:07+08:00",
+  "command": "bash -c npx vitest run src/view2d/panZoom.test.ts && npx playwright test e2e/island.spec.ts -g @S15",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  1 passed (1)\n      Tests  4 passed (4)\n   Start at  11:10:08\n   Duration  95ms (import 42%, transform 28%, worker 15%, tests 14%)\n\n\nRunning 2 tests using 1 worker\n\n  ✓  1 [chromium] › e2e/island.spec.ts:109:1 › @S15 在 2D 插畫上拖曳平移、以游標為中心縮放、雙擊重設 (4.4s)\n  ✓  2 [chromium] › e2e/island.spec.ts:156:1 › @S15 2D 互動細節：右鍵不拖曳、連續兩次短拖曳不誤判雙擊、不攔截瀏覽器縮放快捷鍵、焦點可見 (2.8s)\n\n  2 passed (9.3s)"
+}

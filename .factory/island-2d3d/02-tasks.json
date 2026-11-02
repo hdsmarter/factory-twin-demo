@@ -341,6 +341,126 @@
         "T14"
       ],
       "test_command": "npx vitest run src/platform"
+    },
+    {
+      "id": "T16",
+      "title": "移動體姿態加上目前區段的已經過時間與總時長（步態相位與動作轉換用）",
+      "role": "implementer",
+      "scenarios": [
+        "S13",
+        "S14"
+      ],
+      "files": [
+        "src/domain/actors.ts",
+        "src/domain/actors.test.ts"
+      ],
+      "depends_on": [
+        "T15"
+      ],
+      "test_command": "npx vitest run src/domain/actors.test.ts"
+    },
+    {
+      "id": "T17",
+      "title": "骨架人物姿勢純函數：兩段 IK 步態、工作關鍵格、緩動轉換、關節限制",
+      "role": "implementer",
+      "scenarios": [
+        "S13",
+        "S14"
+      ],
+      "files": [
+        "src/view2d/rig/gait.ts",
+        "src/view2d/rig/gait.test.ts"
+      ],
+      "depends_on": [
+        "T16"
+      ],
+      "test_command": "npx vitest run src/view2d/rig"
+    },
+    {
+      "id": "T18",
+      "title": "骨架人物 SVG 繪製，取代 Open Peeps（移除 react-peeps）",
+      "role": "implementer",
+      "scenarios": [
+        "S8",
+        "S14"
+      ],
+      "files": [
+        "src/view2d/rig/Rig.tsx",
+        "src/view2d/Worker.tsx",
+        "src/view2d/Peep.tsx",
+        "src/view2d/palette.ts",
+        "src/view2d/IsoScene.tsx",
+        "src/App.tsx",
+        "package.json",
+        "package-lock.json"
+      ],
+      "depends_on": [
+        "T17"
+      ],
+      "test_command": "npx vitest run src/view2d"
+    },
+    {
+      "id": "T19",
+      "title": "平移縮放純函數：以游標為中心縮放、平移換算、上下限",
+      "role": "implementer",
+      "scenarios": [
+        "S15"
+      ],
+      "files": [
+        "src/view2d/panZoom.ts",
+        "src/view2d/panZoom.test.ts"
+      ],
+      "depends_on": [
+        "T15"
+      ],
+      "test_command": "npx vitest run src/view2d/panZoom.test.ts"
+    },
+    {
+      "id": "T20",
+      "title": "2D 拖曳／滾輪／雙指／鍵盤互動與重設，接到畫面",
+      "role": "implementer",
+      "scenarios": [
+        "S15"
+      ],
+      "files": [
+        "src/view2d/usePanZoom.ts",
+        "src/view2d/IsoScene.tsx",
+        "src/App.tsx",
+        "src/i18n/zh-TW.ts",
+        "e2e/island.spec.ts"
+      ],
+      "depends_on": [
+        "T18",
+        "T19"
+      ],
+      "test_command": "npx playwright test e2e/island.spec.ts"
+    },
+    {
+      "id": "T21",
+      "title": "審查修正：轉角平順轉身、步幅對齊整圈、工作循環對齊停留、緩動與互動 a11y",
+      "role": "implementer",
+      "scenarios": [
+        "S13",
+        "S14",
+        "S15"
+      ],
+      "files": [
+        "src/domain/actors.ts",
+        "src/domain/actors.test.ts",
+        "src/view2d/rig/gait.ts",
+        "src/view2d/rig/gait.test.ts",
+        "src/view2d/Worker.tsx",
+        "src/view2d/Worker.test.ts",
+        "src/view2d/IsoScene.tsx",
+        "src/view2d/usePanZoom.ts",
+        "src/App.tsx",
+        "src/i18n/zh-TW.ts",
+        "e2e/island.spec.ts"
+      ],
+      "depends_on": [
+        "T20"
+      ],
+      "test_command": "npx vitest run src/view2d/Worker.test.ts"
     }
   ]
 }

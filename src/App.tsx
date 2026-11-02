@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Suspense, lazy, useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useState, useSyncExternalStore, type CSSProperties } from 'react'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import layoutJson from '../data/factory-layout.json'
@@ -22,9 +22,10 @@ import { Dust } from './scene/effects/Dust'
 import { LightBeams } from './scene/effects/LightBeams'
 import { Island } from './scene/island'
 import { ViewModeProvider, type ViewMode } from './scene/viewMode'
+import { usePanZoom } from './view2d/usePanZoom'
 import { camera, color, ui } from './theme/tokens'
 
-/** 2D 插畫在切換時才載入（含 Open Peeps 人物素材） */
+/** 2D 插畫在切換時才載入 */
 const IsoScene = lazy(() => import('./view2d/IsoScene').then((m) => ({ default: m.IsoScene })))
 
 const font = '"Noto Sans TC", "PingFang TC", system-ui, sans-serif'
@@ -69,6 +70,21 @@ function CameraRig({ mode }: { mode: ViewMode }) {
 
 const viewport = () => ({ width: window.innerWidth, height: window.innerHeight })
 
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
+/** 使用者是否偏好減少動態（隨系統設定即時更新） */
+function useReducedMotion(): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      const m = window.matchMedia(REDUCED_MOTION)
+      m.addEventListener('change', cb)
+      return () => m.removeEventListener('change', cb)
+    },
+    () => window.matchMedia(REDUCED_MOTION).matches,
+  )
+}
+
+const ISO2D_DESCRIPTION_ID = 'iso2d-description'
+
 /** 2D 插畫：與 3D 共用同一條模擬時間軸，以 simulate() 逐幀更新（只在 2D 視角時運轉） */
 function Iso2D({ site, placed, actors, timeline, active }: { site: Site; placed: PlacedEquipment[]; actors: Actor[]; timeline: SimTimeline; active: boolean }) {
   const [t, setT] = useState(() => timeline.now())
@@ -92,10 +108,25 @@ function Iso2D({ site, placed, actors, timeline, active }: { site: Site; placed:
     }
   }, [active, timeline])
   const state = useMemo(() => simulate(site, placed, t), [site, placed, t])
+  const pz = usePanZoom<HTMLDivElement>()
+  const reduced = useReducedMotion()
   return (
-    <div role="img" aria-label={msg.iso2dLabel} data-sim-t={t} style={{ width: '100%', height: '100%' }}>
+    <div
+      ref={pz.ref}
+      role="application"
+      aria-label={msg.iso2dLabel}
+      aria-describedby={ISO2D_DESCRIPTION_ID}
+      tabIndex={0}
+      className="iso2d"
+      data-sim-t={t}
+      {...pz.handlers}
+      style={{ width: '100%', height: '100%', touchAction: 'none', cursor: pz.dragging ? 'grabbing' : 'grab' }}
+    >
+      <p id={ISO2D_DESCRIPTION_ID} className="visually-hidden">
+        {msg.iso2dDescription}
+      </p>
       <Suspense fallback={null}>
-        <IsoScene site={site} placed={placed} actors={actors} state={state} t={t} width={size.width} height={size.height} framing="factory" />
+        <IsoScene site={site} placed={placed} actors={actors} state={state} t={t} width={size.width} height={size.height} framing="factory" view={pz.view} ambient={!reduced} />
       </Suspense>
     </div>
   )
@@ -167,9 +198,12 @@ export function App() {
       <style>{`@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
 .view-switcher { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(16px + env(safe-area-inset-top, 0px)); }
 .view-switcher button:focus-visible { outline: 2px solid ${color.buttonActiveBg}; outline-offset: 2px; }
+.iso2d { outline: none; }
+.iso2d:focus-visible { outline: 3px solid ${color.focusRing}; outline-offset: -3px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 @media (max-width: 640px) {
   .view-switcher { top: auto; right: 50%; transform: translateX(50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
-  .hud-hint { display: none; }
+  .hud-hint:not(.hud-hint-2d) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }`}</style>
       <div style={{ position: 'absolute', inset: 0 }}>
@@ -210,7 +244,7 @@ export function App() {
       <div style={hud}>
         <div style={{ fontSize: 20, fontWeight: 700 }}>{msg.title}</div>
         <div style={{ fontSize: 14, opacity: 0.85, marginTop: 4 }}>{SUBTITLE[mode]}</div>
-        {!is2d && <div className="hud-hint" style={{ fontSize: 12, opacity: 0.6, marginTop: 8 }}>{msg.hint}</div>}
+        <div className={is2d ? 'hud-hint hud-hint-2d' : 'hud-hint'} style={{ fontSize: 12, opacity: 0.6, marginTop: 8 }}>{is2d ? msg.hint2d : msg.hint}</div>
       </div>
       <Switcher mode={mode} onChange={setMode} />
     </div>

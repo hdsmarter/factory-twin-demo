@@ -1,0 +1,8 @@
+{
+  "scenario": "S5",
+  "at": "2026-11-02T11:10:33+08:00",
+  "command": "npx vitest run src/domain/parseLayout.test.ts src/domain/factoryLayout.test.ts",
+  "exit_code": 0,
+  "fingerprint": "0226200+52784dc45368",
+  "output_tail": "RUN  v5.0.5 /Users/tonyjiang/Code/ai-smarter-tw-影片\n\n\n Test Files  2 passed (2)\n      Tests  37 passed (37)\n   Start at  11:10:33\n   Duration  104ms (import 41%, transform 29%, tests 20%, worker 9%)"
+}

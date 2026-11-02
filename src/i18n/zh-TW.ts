@@ -11,6 +11,8 @@ export const zhTW = {
   iso2dLabel: '工廠等角插畫：與 3D 場景共用同一份產線資料',
   subtitleIsland: '荒島工廠 · 即時 3D 寫實場景',
   subtitle2d: '等角插畫 · 與 3D 共用同一份資料',
+  hint2d: '拖曳平移 · 滾輪或雙指縮放 · 雙擊重設',
+  iso2dDescription: '拖曳平移，滾輪或雙指縮放，雙擊重設；鍵盤：方向鍵平移，加號減號縮放，0 重設',
 } as const
 
 export type Messages = typeof zhTW
